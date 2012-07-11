@@ -33,9 +33,10 @@ Unix/OSX
 4. `make`
 5. `make install`
 6. Add the extension to your php.ini
+
 ````
-; Enable scrypt extension module
-extension=scrypt.so
+    ; Enable scrypt extension module
+    extension=scrypt.so
 ````
 
 Windows
