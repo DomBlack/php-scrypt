@@ -5,6 +5,8 @@ This is a PHP library providing a wrapper to [Colin Percival's scrypt implementa
 
 Details of the scrypt key derivation function are given in a paper by Colin Percival, Stronger Key Derivation via Sequential Memory-Hard Functions: [PDF](http://www.tarsnap.com/scrypt/scrypt-slides.pdf).
 
+An example class using this module can be found in; scrypt.php
+
 Join in!
 --------
 

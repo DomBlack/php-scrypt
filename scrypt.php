@@ -12,7 +12,13 @@
  */
 
 /**
- * This class abstracts away from
+ * This class abstracts away from scrypt module, allowing for easy use.
+ *
+ * Change the application pepper to something random for yourself.
+ *
+ * You can create a new hash for a password by calling Password::hash($password)
+ *
+ * You can check a password by calling Password::check($password, $hash)
  *
  * @category Security
  * @package  Scrypt
