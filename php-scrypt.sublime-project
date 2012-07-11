@@ -1,0 +1,41 @@
+{
+	"folders":
+	[
+		{
+			"path": "./",
+
+            "file_exclude_patterns":
+            [
+                "*.sublime-project",
+                ".deps",
+                "ac*.m4",
+                "config.h*",
+                "config.log",
+                "config.nice",
+                "config.guess",
+                "configure*",
+                "config.s*",
+                "*.la",
+                "*.lo",
+                "*sh",
+                "libtool",
+                "Makefile*",
+                "missing",
+                "mkinstalldirs",
+                "run-tests.php"
+            ],
+            "folder_exclude_patterns":
+            [
+                ".libs",
+                "*.cache",
+                "build",
+                "include",
+                "modules"
+            ]
+        }
+    ],
+    "settings":
+    {
+        "tab_size": 4
+    }
+}
