@@ -27,9 +27,10 @@ Build Command
 Unix/OSX
 --------
 
-1. phpize
-2. ./configure --enable-scrypt
-3. make
+1. `phpize`
+2. If on OSX; `export CFLAGS='-arch i386 -arch x86_64'`
+3. `./configure --enable-scrypt`
+4. `make`
 
 Windows
 -------

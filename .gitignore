@@ -1,4 +1,33 @@
+# phpize & make related files
 .deps
 *.lo
 *.la
 .libs
+ac*.m4
+*.cache
+build
+config.guess
+config.h*
+config.s*
+config.nice
+config.log
+libtool
+configure*
+install-sh
+ltmain.sh
+Makefile*
+missing
+mkinstalldirs
+run-tests.php
+modules
+
+# Random other things which we dont want commited
+
+# Backups
+*~
+
+# Windows thumb nails
+Thumbs.db
+
+# OSX store fiels
+.DS_Store
