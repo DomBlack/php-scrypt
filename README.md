@@ -31,6 +31,12 @@ Unix/OSX
 2. If on OSX; `export CFLAGS='-arch i386 -arch x86_64'`
 3. `./configure --enable-scrypt`
 4. `make`
+5. `make install`
+6. Add the extension to your php.ini
+````
+; Enable scrypt extension module
+extension=scrypt.so
+````
 
 Windows
 -------
@@ -43,6 +49,7 @@ This works is licensed under the BSD 2-Clause license.
 
 Original Scrypt Implementation;
  Copyright (c) 2009 Colin Percival
+
 PHP Module;
  Copyright (c) 2012, Dominic Black
 
