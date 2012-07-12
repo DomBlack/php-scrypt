@@ -86,6 +86,7 @@ ZEND_GET_MODULE(scrypt)
  */
 PHP_FUNCTION(scrypt)
 {
+    //Variables for PHP's parameters
     char *password;
     int password_len;
 
@@ -97,18 +98,18 @@ PHP_FUNCTION(scrypt)
     long phpP; //1
     long keyLength; //32
 
-	
-    //Clamp & cast them
+
+    //Casted variables for scrypt
     uint64_t cryptN;
     uint32_t cryptR;
     uint32_t cryptP;
 
-	
-    //Allocate the memory for the output of the key
-	unsigned char *base64;
+
+    //Output variables
+    unsigned char *base64;
     unsigned char *buf;
 
-	int result;
+    int result;
 
     //Get the parameters for this call
     if (zend_parse_parameters(
@@ -120,7 +121,8 @@ PHP_FUNCTION(scrypt)
         return;
     }
 
-	cryptN = clampAndCast64("N", phpN);
+    //Clamp & cast them
+    cryptN = clampAndCast64("N", phpN);
     cryptR = clampAndCast64("r", phpR);
     cryptP = clampAndCast64("p", phpP);
 
@@ -141,7 +143,8 @@ PHP_FUNCTION(scrypt)
     //Print to debug the settings we are going to use
     DPRINT("N: %d, r: %d, p: %d, Key Length = %d\n", password, salt, cryptN, cryptR, cryptP, keyLength);
 
-	buf = (unsigned char*)emalloc(keyLength + 1);
+    //Allocate the memory for the output of the key
+    buf = (unsigned char*)emalloc(keyLength + 1);
 
     //Call the scrypt function
     result = crypto_scrypt(
