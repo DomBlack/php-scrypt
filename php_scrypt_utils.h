@@ -37,12 +37,6 @@
 #include "php.h"
 #include <stdint.h>
 
-#ifndef SCRYPT_DEBUG
-    #define DPRINT(_fmt, ...) php_printf("[%s(), %s:%u]:" _fmt "\n", __FUNCTION__, __FILE__, __LINE__, __VA_ARGS__)
-#else
-    #define DPRINT(_fmt, ...)
-#endif
-
 /*
  * Casts a long into a uint64_t.
  *

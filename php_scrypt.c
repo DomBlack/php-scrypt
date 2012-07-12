@@ -126,7 +126,7 @@ PHP_FUNCTION(scrypt)
     cryptR = clampAndCast64("r", phpR);
     cryptP = clampAndCast64("p", phpP);
 
-    if (keyLength <= 16)
+    if (keyLength < 16)
     {
         keyLength = -1;
         php_error(1, "Key length is too low, must be greater or equal to 16");
@@ -139,9 +139,6 @@ PHP_FUNCTION(scrypt)
     if (cryptN < 0 || cryptR < 0 || cryptP < 0 || keyLength < 0) {
         RETURN_BOOL(0);
     }
-
-    //Print to debug the settings we are going to use
-    DPRINT("N: %d, r: %d, p: %d, Key Length = %d\n", password, salt, cryptN, cryptR, cryptP, keyLength);
 
     //Allocate the memory for the output of the key
     buf = (unsigned char*)emalloc(keyLength + 1);
