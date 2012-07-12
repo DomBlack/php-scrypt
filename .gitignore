@@ -1,4 +1,7 @@
+#
 # phpize & make related files
+#
+
 .deps
 *.lo
 *.la
@@ -21,7 +24,20 @@ mkinstalldirs
 run-tests.php
 modules
 
+#
+# Visual Studio
+#
+
+*.suo
+*.user
+Debug/
+Release/
+bin/
+obj/
+
+#
 # Random other things which we dont want commited
+#
 
 # Backups
 *~

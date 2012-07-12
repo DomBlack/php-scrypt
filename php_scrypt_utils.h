@@ -31,6 +31,9 @@
 #include "config.h"
 #endif
 
+#ifdef PHP_WIN32
+#include "zend_config.w32.h"
+#endif
 #include "php.h"
 #include <stdint.h>
 

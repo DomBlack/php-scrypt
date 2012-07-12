@@ -26,7 +26,11 @@
  * This file was originally written by Colin Percival as part of the Tarsnap
  * online backup system.
  */
+
 #include "php.h"
+#ifdef PHP_WIN32
+#include "zend_config.w32.h"
+#endif
 
 #include <errno.h>
 #include <stdint.h>

@@ -29,6 +29,9 @@
 #endif
 
 #include "php.h"
+#ifdef PHP_WIN32
+#include "zend_config.w32.h"
+#endif
 #include "php_scrypt_utils.h"
 #include "php_scrypt.h"
 #include "crypto/crypto_scrypt.h"
@@ -94,6 +97,19 @@ PHP_FUNCTION(scrypt)
     long phpP; //1
     long keyLength; //32
 
+	
+    //Clamp & cast them
+    uint64_t cryptN;
+    uint32_t cryptR;
+    uint32_t cryptP;
+
+	
+    //Allocate the memory for the output of the key
+	unsigned char *base64;
+    unsigned char *buf;
+
+	int result;
+
     //Get the parameters for this call
     if (zend_parse_parameters(
             ZEND_NUM_ARGS() TSRMLS_CC, "ssllll",
@@ -104,10 +120,9 @@ PHP_FUNCTION(scrypt)
         return;
     }
 
-    //Clamp & cast them
-    uint64_t cryptN = clampAndCast64("N", phpN);
-    uint32_t cryptR = clampAndCast64("r", phpR);
-    uint32_t cryptP = clampAndCast64("p", phpP);
+	cryptN = clampAndCast64("N", phpN);
+    cryptR = clampAndCast64("r", phpR);
+    cryptP = clampAndCast64("p", phpP);
 
     if (keyLength <= 16)
     {
@@ -126,11 +141,10 @@ PHP_FUNCTION(scrypt)
     //Print to debug the settings we are going to use
     DPRINT("N: %d, r: %d, p: %d, Key Length = %d\n", password, salt, cryptN, cryptR, cryptP, keyLength);
 
-    //Allocate the memory for the output of the key
-    unsigned char *buf = (unsigned char*)emalloc(keyLength + 1);
+	buf = (unsigned char*)emalloc(keyLength + 1);
 
     //Call the scrypt function
-    int result = crypto_scrypt(
+    result = crypto_scrypt(
         password, password_len, salt, salt_len, //Input
         cryptN, cryptR, cryptP, //Settings
         buf, keyLength //Output
@@ -143,7 +157,7 @@ PHP_FUNCTION(scrypt)
     }
 
     //Encode the output in base 64
-    unsigned char *base64 = php_base64_encode(buf, keyLength, &result);
+    base64 = php_base64_encode(buf, keyLength, &result);
     efree(buf);
     if (base64 == NULL) {
         php_error(1, "scrypt error while base 64 encoding");

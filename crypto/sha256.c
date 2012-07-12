@@ -24,9 +24,9 @@
  * SUCH DAMAGE.
  */
 
-#include <sys/types.h>
 #include "php.h"
 
+#include <sys/types.h>
 #include <stdint.h>
 #include <string.h>
 

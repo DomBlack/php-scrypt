@@ -23,8 +23,13 @@ Authors
 
 This library is written and maintained by Dominic Black, <thephenix@gmail.com>.
 
-Build Command
-=============
+Precompiled Binarys
+===================
+
+If you don't want to compile from source check out the [downloads page](https://github.com/DomBlack/php-scrypt/downloads) for precompiled binarys.
+
+Build From Source
+=================
 
 Unix/OSX
 --------
@@ -44,7 +49,19 @@ Unix/OSX
 Windows
 -------
 
-I have written a config.w32, however it is untested.
+Using Visual Studio 2008 (or Visual C++ Express 2008) open up the attached project
+inside the VS2008 folder. This project assumes you have the PHP thread safe source at;
+`C:\phpsrcts\`, a PHP install at `C:\php\` and this source code extracted to
+`C:\php-scrypt\`.
+
+1. Build the project.
+2. Copy the resultant `scrypt.dll` to your ext directory in PHP.
+3. Add the extension to your php.ini
+
+````
+    ; Enable scrypt extension module
+    extension=scrypt.dll
+````
 
 Legal Stuff
 ===========
