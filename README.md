@@ -23,6 +23,8 @@ Authors
 
 This library is written and maintained by Dominic Black, <thephenix@gmail.com>.
 
+----
+
 Precompiled Binarys
 ===================
 
