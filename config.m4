@@ -5,17 +5,17 @@ if test $PHP_SCRYPT != "no"; then
     PHP_ADD_INCLUDE(crypto)
     PHP_ADD_BUILD_DIR(crypto)
 
-	AH_TEMPLATE(HAVE_SYSCTL_HW_USERMEM, [Define if the hw.usermem property exists in sysctl.])
-	if sysctl hw.usermem >/dev/null 2>/dev/null; then
-		AC_DEFINE(HAVE_SYSCTL_HW_USERMEM, 1)
-	fi
+    AH_TEMPLATE(HAVE_SYSCTL_HW_USERMEM, [Define if the hw.usermem property exists in sysctl.])
+    if sysctl hw.usermem >/dev/null 2>/dev/null; then
+        AC_DEFINE(HAVE_SYSCTL_HW_USERMEM, 1)
+    fi
+
+    AH_TEMPLATE(HAVE_CLOCK_GETTIME, [See if we have the clock_gettime function.])
+    AH_TEMPLATE(HAVE_STRUCT_SYSINFO, [Define if the sysinfo struct exists.])
+    AH_TEMPLATE(HAVE_STRUCT_SYSINFO_TOTALRAM, [Define if the sysinfo struct has a member for the total amount of RAM.])
 	
-	AH_TEMPLATE(HAVE_CLOCK_GETTIME, [See if we have the clock_gettime function.])
-	AH_TEMPLATE(HAVE_STRUCT_SYSINFO, [Define if the sysinfo struct exists.])
-	AH_TEMPLATE(HAVE_STRUCT_SYSINFO_TOTALRAM, [Define if the sysinfo struct has a member for the total amount of RAM.])
-	
-	AC_SEARCH_LIBS([clock_gettime], [rt], [AC_DEFINE(HAVE_CLOCK_GETTIME, 1)])
-	AC_CHECK_MEMBER([struct sysinfo.uptime], [AC_DEFINE(HAVE_STRUCT_SYSINFO)])
+    AC_SEARCH_LIBS([clock_gettime], [rt], [AC_DEFINE(HAVE_CLOCK_GETTIME, 1)])
+    AC_CHECK_MEMBER([struct sysinfo.uptime], [AC_DEFINE(HAVE_STRUCT_SYSINFO)])
     AC_CHECK_MEMBER([struct sysinfo.totalram], [AC_DEFINE(HAVE_STRUCT_SYSINFO_TOTALRAM)])
 
     version=nosse
