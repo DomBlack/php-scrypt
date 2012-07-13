@@ -41,7 +41,7 @@
 
 static function_entry scrypt_functions[] = {
     PHP_FE(scrypt, NULL)
-	PHP_FE(scrypt_pickparams, NULL)
+    PHP_FE(scrypt_pickparams, NULL)
     {NULL, NULL, NULL}
 };
 
@@ -115,11 +115,11 @@ PHP_FUNCTION(scrypt)
     int result;
 
     //Get the parameters for this call
-	phpN = -1;
-	phpR = -1;
-	phpP = -1;
-	keyLength = 64;
-	raw_output = 0;
+    phpN = -1;
+    phpR = -1;
+    phpP = -1;
+    keyLength = 64;
+    raw_output = 0;
     if (zend_parse_parameters(
             ZEND_NUM_ARGS() TSRMLS_CC, "ssllll|b",
             &password, &password_len, &salt, &salt_len,
@@ -191,16 +191,16 @@ PHP_FUNCTION(scrypt)
 PHP_FUNCTION(scrypt_pickparams)
 {
     long maxmem;
-	double memfrac, maxtime;
-	
-	int cryptN;
-	uint32_t cryptR;
-	uint32_t cryptP;
-	
-	long phpN, phpP, phpR;
-	
-	int rc;
-	
+    double memfrac, maxtime;
+    
+    int cryptN;
+    uint32_t cryptR;
+    uint32_t cryptP;
+    
+    long phpN, phpP, phpR;
+    
+    int rc;
+    
     //Get the parameters for this call
     if (zend_parse_parameters(
             ZEND_NUM_ARGS() TSRMLS_CC, "ldd",
@@ -209,25 +209,25 @@ PHP_FUNCTION(scrypt_pickparams)
     {
         return;
     }
-	
-	if(maxmem < 0 || memfrac < 0 || maxtime < 0) {
-		RETURN_FALSE;
-	}
-	
-	rc = pickparams((size_t) maxmem, memfrac, maxtime, &cryptN, &cryptR, &cryptP);
-	
-	if(rc != 0) {
-		php_error(1, "Could not determine scrypt parameters.");
-		RETURN_FALSE;
-	}
-	
-	phpN = (long) cryptN;
-	phpR = (long) cryptR;
-	phpP = (long) cryptP;
-	
-	array_init(return_value);
-	add_assoc_long(return_value, "n", phpN);
-	add_assoc_long(return_value, "r", phpR);
-	add_assoc_long(return_value, "p", phpP);
-	return;
+    
+    if(maxmem < 0 || memfrac < 0 || maxtime < 0) {
+        RETURN_FALSE;
+    }
+    
+    rc = pickparams((size_t) maxmem, memfrac, maxtime, &cryptN, &cryptR, &cryptP);
+    
+    if(rc != 0) {
+        php_error(1, "Could not determine scrypt parameters.");
+        RETURN_FALSE;
+    }
+    
+    phpN = (long) cryptN;
+    phpR = (long) cryptR;
+    phpP = (long) cryptP;
+    
+    array_init(return_value);
+    add_assoc_long(return_value, "n", phpN);
+    add_assoc_long(return_value, "r", phpR);
+    add_assoc_long(return_value, "p", phpP);
+    return;
 }

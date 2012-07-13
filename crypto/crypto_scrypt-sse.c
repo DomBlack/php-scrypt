@@ -50,25 +50,25 @@ static void smix(uint8_t *, size_t, uint64_t, void *, void *);
 static void
 blkcpy(void * dest, void * src, size_t len)
 {
-	__m128i * D = dest;
-	__m128i * S = src;
-	size_t L = len / 16;
-	size_t i;
+    __m128i * D = dest;
+    __m128i * S = src;
+    size_t L = len / 16;
+    size_t i;
 
-	for (i = 0; i < L; i++)
-		D[i] = S[i];
+    for (i = 0; i < L; i++)
+        D[i] = S[i];
 }
 
 static void
 blkxor(void * dest, void * src, size_t len)
 {
-	__m128i * D = dest;
-	__m128i * S = src;
-	size_t L = len / 16;
-	size_t i;
+    __m128i * D = dest;
+    __m128i * S = src;
+    size_t L = len / 16;
+    size_t i;
 
-	for (i = 0; i < L; i++)
-		D[i] = _mm_xor_si128(D[i], S[i]);
+    for (i = 0; i < L; i++)
+        D[i] = _mm_xor_si128(D[i], S[i]);
 }
 
 /**
@@ -78,59 +78,59 @@ blkxor(void * dest, void * src, size_t len)
 static void
 salsa20_8(__m128i B[4])
 {
-	__m128i X0, X1, X2, X3;
-	__m128i T;
-	size_t i;
+    __m128i X0, X1, X2, X3;
+    __m128i T;
+    size_t i;
 
-	X0 = B[0];
-	X1 = B[1];
-	X2 = B[2];
-	X3 = B[3];
+    X0 = B[0];
+    X1 = B[1];
+    X2 = B[2];
+    X3 = B[3];
 
-	for (i = 0; i < 8; i += 2) {
-		/* Operate on "columns". */
-		T = _mm_add_epi32(X0, X3);
-		X1 = _mm_xor_si128(X1, _mm_slli_epi32(T, 7));
-		X1 = _mm_xor_si128(X1, _mm_srli_epi32(T, 25));
-		T = _mm_add_epi32(X1, X0);
-		X2 = _mm_xor_si128(X2, _mm_slli_epi32(T, 9));
-		X2 = _mm_xor_si128(X2, _mm_srli_epi32(T, 23));
-		T = _mm_add_epi32(X2, X1);
-		X3 = _mm_xor_si128(X3, _mm_slli_epi32(T, 13));
-		X3 = _mm_xor_si128(X3, _mm_srli_epi32(T, 19));
-		T = _mm_add_epi32(X3, X2);
-		X0 = _mm_xor_si128(X0, _mm_slli_epi32(T, 18));
-		X0 = _mm_xor_si128(X0, _mm_srli_epi32(T, 14));
+    for (i = 0; i < 8; i += 2) {
+        /* Operate on "columns". */
+        T = _mm_add_epi32(X0, X3);
+        X1 = _mm_xor_si128(X1, _mm_slli_epi32(T, 7));
+        X1 = _mm_xor_si128(X1, _mm_srli_epi32(T, 25));
+        T = _mm_add_epi32(X1, X0);
+        X2 = _mm_xor_si128(X2, _mm_slli_epi32(T, 9));
+        X2 = _mm_xor_si128(X2, _mm_srli_epi32(T, 23));
+        T = _mm_add_epi32(X2, X1);
+        X3 = _mm_xor_si128(X3, _mm_slli_epi32(T, 13));
+        X3 = _mm_xor_si128(X3, _mm_srli_epi32(T, 19));
+        T = _mm_add_epi32(X3, X2);
+        X0 = _mm_xor_si128(X0, _mm_slli_epi32(T, 18));
+        X0 = _mm_xor_si128(X0, _mm_srli_epi32(T, 14));
 
-		/* Rearrange data. */
-		X1 = _mm_shuffle_epi32(X1, 0x93);
-		X2 = _mm_shuffle_epi32(X2, 0x4E);
-		X3 = _mm_shuffle_epi32(X3, 0x39);
+        /* Rearrange data. */
+        X1 = _mm_shuffle_epi32(X1, 0x93);
+        X2 = _mm_shuffle_epi32(X2, 0x4E);
+        X3 = _mm_shuffle_epi32(X3, 0x39);
 
-		/* Operate on "rows". */
-		T = _mm_add_epi32(X0, X1);
-		X3 = _mm_xor_si128(X3, _mm_slli_epi32(T, 7));
-		X3 = _mm_xor_si128(X3, _mm_srli_epi32(T, 25));
-		T = _mm_add_epi32(X3, X0);
-		X2 = _mm_xor_si128(X2, _mm_slli_epi32(T, 9));
-		X2 = _mm_xor_si128(X2, _mm_srli_epi32(T, 23));
-		T = _mm_add_epi32(X2, X3);
-		X1 = _mm_xor_si128(X1, _mm_slli_epi32(T, 13));
-		X1 = _mm_xor_si128(X1, _mm_srli_epi32(T, 19));
-		T = _mm_add_epi32(X1, X2);
-		X0 = _mm_xor_si128(X0, _mm_slli_epi32(T, 18));
-		X0 = _mm_xor_si128(X0, _mm_srli_epi32(T, 14));
+        /* Operate on "rows". */
+        T = _mm_add_epi32(X0, X1);
+        X3 = _mm_xor_si128(X3, _mm_slli_epi32(T, 7));
+        X3 = _mm_xor_si128(X3, _mm_srli_epi32(T, 25));
+        T = _mm_add_epi32(X3, X0);
+        X2 = _mm_xor_si128(X2, _mm_slli_epi32(T, 9));
+        X2 = _mm_xor_si128(X2, _mm_srli_epi32(T, 23));
+        T = _mm_add_epi32(X2, X3);
+        X1 = _mm_xor_si128(X1, _mm_slli_epi32(T, 13));
+        X1 = _mm_xor_si128(X1, _mm_srli_epi32(T, 19));
+        T = _mm_add_epi32(X1, X2);
+        X0 = _mm_xor_si128(X0, _mm_slli_epi32(T, 18));
+        X0 = _mm_xor_si128(X0, _mm_srli_epi32(T, 14));
 
-		/* Rearrange data. */
-		X1 = _mm_shuffle_epi32(X1, 0x39);
-		X2 = _mm_shuffle_epi32(X2, 0x4E);
-		X3 = _mm_shuffle_epi32(X3, 0x93);
-	}
+        /* Rearrange data. */
+        X1 = _mm_shuffle_epi32(X1, 0x39);
+        X2 = _mm_shuffle_epi32(X2, 0x4E);
+        X3 = _mm_shuffle_epi32(X3, 0x93);
+    }
 
-	B[0] = _mm_add_epi32(B[0], X0);
-	B[1] = _mm_add_epi32(B[1], X1);
-	B[2] = _mm_add_epi32(B[2], X2);
-	B[3] = _mm_add_epi32(B[3], X3);
+    B[0] = _mm_add_epi32(B[0], X0);
+    B[1] = _mm_add_epi32(B[1], X1);
+    B[2] = _mm_add_epi32(B[2], X2);
+    B[3] = _mm_add_epi32(B[3], X3);
 }
 
 /**
@@ -142,29 +142,29 @@ salsa20_8(__m128i B[4])
 static void
 blockmix_salsa8(__m128i * Bin, __m128i * Bout, __m128i * X, size_t r)
 {
-	size_t i;
+    size_t i;
 
-	/* 1: X <-- B_{2r - 1} */
-	blkcpy(X, &Bin[8 * r - 4], 64);
+    /* 1: X <-- B_{2r - 1} */
+    blkcpy(X, &Bin[8 * r - 4], 64);
 
-	/* 2: for i = 0 to 2r - 1 do */
-	for (i = 0; i < r; i++) {
-		/* 3: X <-- H(X \xor B_i) */
-		blkxor(X, &Bin[i * 8], 64);
-		salsa20_8(X);
+    /* 2: for i = 0 to 2r - 1 do */
+    for (i = 0; i < r; i++) {
+        /* 3: X <-- H(X \xor B_i) */
+        blkxor(X, &Bin[i * 8], 64);
+        salsa20_8(X);
 
-		/* 4: Y_i <-- X */
-		/* 6: B' <-- (Y_0, Y_2 ... Y_{2r-2}, Y_1, Y_3 ... Y_{2r-1}) */
-		blkcpy(&Bout[i * 4], X, 64);
+        /* 4: Y_i <-- X */
+        /* 6: B' <-- (Y_0, Y_2 ... Y_{2r-2}, Y_1, Y_3 ... Y_{2r-1}) */
+        blkcpy(&Bout[i * 4], X, 64);
 
-		/* 3: X <-- H(X \xor B_i) */
-		blkxor(X, &Bin[i * 8 + 4], 64);
-		salsa20_8(X);
+        /* 3: X <-- H(X \xor B_i) */
+        blkxor(X, &Bin[i * 8 + 4], 64);
+        salsa20_8(X);
 
-		/* 4: Y_i <-- X */
-		/* 6: B' <-- (Y_0, Y_2 ... Y_{2r-2}, Y_1, Y_3 ... Y_{2r-1}) */
-		blkcpy(&Bout[(r + i) * 4], X, 64);
-	}
+        /* 4: Y_i <-- X */
+        /* 6: B' <-- (Y_0, Y_2 ... Y_{2r-2}, Y_1, Y_3 ... Y_{2r-1}) */
+        blkcpy(&Bout[(r + i) * 4], X, 64);
+    }
 }
 
 /**
@@ -174,9 +174,9 @@ blockmix_salsa8(__m128i * Bin, __m128i * Bout, __m128i * X, size_t r)
 static uint64_t
 integerify(void * B, size_t r)
 {
-	uint32_t * X = (void *)((uintptr_t)(B) + (2 * r - 1) * 64);
+    uint32_t * X = (void *)((uintptr_t)(B) + (2 * r - 1) * 64);
 
-	return (((uint64_t)(X[13]) << 32) + X[0]);
+    return (((uint64_t)(X[13]) << 32) + X[0]);
 }
 
 /**
@@ -190,61 +190,61 @@ integerify(void * B, size_t r)
 static void
 smix(uint8_t * B, size_t r, uint64_t N, void * V, void * XY)
 {
-	__m128i * X = XY;
-	__m128i * Y = (void *)((uintptr_t)(XY) + 128 * r);
-	__m128i * Z = (void *)((uintptr_t)(XY) + 256 * r);
-	uint32_t * X32 = (void *)X;
-	uint64_t i, j;
-	size_t k;
+    __m128i * X = XY;
+    __m128i * Y = (void *)((uintptr_t)(XY) + 128 * r);
+    __m128i * Z = (void *)((uintptr_t)(XY) + 256 * r);
+    uint32_t * X32 = (void *)X;
+    uint64_t i, j;
+    size_t k;
 
-	/* 1: X <-- B */
-	for (k = 0; k < 2 * r; k++) {
-		for (i = 0; i < 16; i++) {
-			X32[k * 16 + i] =
-			    le32dec(&B[(k * 16 + (i * 5 % 16)) * 4]);
-		}
-	}
+    /* 1: X <-- B */
+    for (k = 0; k < 2 * r; k++) {
+        for (i = 0; i < 16; i++) {
+            X32[k * 16 + i] =
+                le32dec(&B[(k * 16 + (i * 5 % 16)) * 4]);
+        }
+    }
 
-	/* 2: for i = 0 to N - 1 do */
-	for (i = 0; i < N; i += 2) {
-		/* 3: V_i <-- X */
-		blkcpy((void *)((uintptr_t)(V) + i * 128 * r), X, 128 * r);
+    /* 2: for i = 0 to N - 1 do */
+    for (i = 0; i < N; i += 2) {
+        /* 3: V_i <-- X */
+        blkcpy((void *)((uintptr_t)(V) + i * 128 * r), X, 128 * r);
 
-		/* 4: X <-- H(X) */
-		blockmix_salsa8(X, Y, Z, r);
+        /* 4: X <-- H(X) */
+        blockmix_salsa8(X, Y, Z, r);
 
-		/* 3: V_i <-- X */
-		blkcpy((void *)((uintptr_t)(V) + (i + 1) * 128 * r),
-		    Y, 128 * r);
+        /* 3: V_i <-- X */
+        blkcpy((void *)((uintptr_t)(V) + (i + 1) * 128 * r),
+            Y, 128 * r);
 
-		/* 4: X <-- H(X) */
-		blockmix_salsa8(Y, X, Z, r);
-	}
+        /* 4: X <-- H(X) */
+        blockmix_salsa8(Y, X, Z, r);
+    }
 
-	/* 6: for i = 0 to N - 1 do */
-	for (i = 0; i < N; i += 2) {
-		/* 7: j <-- Integerify(X) mod N */
-		j = integerify(X, r) & (N - 1);
+    /* 6: for i = 0 to N - 1 do */
+    for (i = 0; i < N; i += 2) {
+        /* 7: j <-- Integerify(X) mod N */
+        j = integerify(X, r) & (N - 1);
 
-		/* 8: X <-- H(X \xor V_j) */
-		blkxor(X, (void *)((uintptr_t)(V) + j * 128 * r), 128 * r);
-		blockmix_salsa8(X, Y, Z, r);
+        /* 8: X <-- H(X \xor V_j) */
+        blkxor(X, (void *)((uintptr_t)(V) + j * 128 * r), 128 * r);
+        blockmix_salsa8(X, Y, Z, r);
 
-		/* 7: j <-- Integerify(X) mod N */
-		j = integerify(Y, r) & (N - 1);
+        /* 7: j <-- Integerify(X) mod N */
+        j = integerify(Y, r) & (N - 1);
 
-		/* 8: X <-- H(X \xor V_j) */
-		blkxor(Y, (void *)((uintptr_t)(V) + j * 128 * r), 128 * r);
-		blockmix_salsa8(Y, X, Z, r);
-	}
+        /* 8: X <-- H(X \xor V_j) */
+        blkxor(Y, (void *)((uintptr_t)(V) + j * 128 * r), 128 * r);
+        blockmix_salsa8(Y, X, Z, r);
+    }
 
-	/* 10: B' <-- X */
-	for (k = 0; k < 2 * r; k++) {
-		for (i = 0; i < 16; i++) {
-			le32enc(&B[(k * 16 + (i * 5 % 16)) * 4],
-			    X32[k * 16 + i]);
-		}
-	}
+    /* 10: B' <-- X */
+    for (k = 0; k < 2 * r; k++) {
+        for (i = 0; i < 16; i++) {
+            le32enc(&B[(k * 16 + (i * 5 % 16)) * 4],
+                X32[k * 16 + i]);
+        }
+    }
 }
 
 /**
@@ -261,104 +261,104 @@ crypto_scrypt(const uint8_t * passwd, size_t passwdlen,
     const uint8_t * salt, size_t saltlen, uint64_t N, uint32_t r, uint32_t p,
     uint8_t * buf, size_t buflen)
 {
-	void * B0, * V0, * XY0;
-	uint8_t * B;
-	uint32_t * V;
-	uint32_t * XY;
-	uint32_t i;
+    void * B0, * V0, * XY0;
+    uint8_t * B;
+    uint32_t * V;
+    uint32_t * XY;
+    uint32_t i;
 
-	/* Sanity-check parameters. */
+    /* Sanity-check parameters. */
 #if SIZE_MAX > UINT32_MAX
-	if (buflen > (((uint64_t)(1) << 32) - 1) * 32) {
-		errno = EFBIG;
-		goto err0;
-	}
+    if (buflen > (((uint64_t)(1) << 32) - 1) * 32) {
+        errno = EFBIG;
+        goto err0;
+    }
 #endif
-	if ((uint64_t)(r) * (uint64_t)(p) >= (1 << 30)) {
-		errno = EFBIG;
-		goto err0;
-	}
-	if (((N & (N - 1)) != 0) || (N == 0)) {
-		errno = EINVAL;
-		goto err0;
-	}
-	if ((r > SIZE_MAX / 128 / p) ||
+    if ((uint64_t)(r) * (uint64_t)(p) >= (1 << 30)) {
+        errno = EFBIG;
+        goto err0;
+    }
+    if (((N & (N - 1)) != 0) || (N == 0)) {
+        errno = EINVAL;
+        goto err0;
+    }
+    if ((r > SIZE_MAX / 128 / p) ||
 #if SIZE_MAX / 256 <= UINT32_MAX
-	    (r > (SIZE_MAX - 64) / 256) ||
+        (r > (SIZE_MAX - 64) / 256) ||
 #endif
-	    (N > SIZE_MAX / 128 / r)) {
-		errno = ENOMEM;
-		goto err0;
-	}
+        (N > SIZE_MAX / 128 / r)) {
+        errno = ENOMEM;
+        goto err0;
+    }
 
-	/* Allocate memory. */
+    /* Allocate memory. */
 #ifdef HAVE_POSIX_MEMALIGN
-	if ((errno = posix_memalign(&B0, 64, 128 * r * p)) != 0)
-		goto err0;
-	B = (uint8_t *)(B0);
-	if ((errno = posix_memalign(&XY0, 64, 256 * r + 64)) != 0)
-		goto err1;
-	XY = (uint32_t *)(XY0);
+    if ((errno = posix_memalign(&B0, 64, 128 * r * p)) != 0)
+        goto err0;
+    B = (uint8_t *)(B0);
+    if ((errno = posix_memalign(&XY0, 64, 256 * r + 64)) != 0)
+        goto err1;
+    XY = (uint32_t *)(XY0);
 #ifndef MAP_ANON
-	if ((errno = posix_memalign(&V0, 64, 128 * r * N)) != 0)
-		goto err2;
-	V = (uint32_t *)(V0);
+    if ((errno = posix_memalign(&V0, 64, 128 * r * N)) != 0)
+        goto err2;
+    V = (uint32_t *)(V0);
 #endif
 #else
-	if ((B0 = malloc(128 * r * p + 63)) == NULL)
-		goto err0;
-	B = (uint8_t *)(((uintptr_t)(B0) + 63) & ~ (uintptr_t)(63));
-	if ((XY0 = malloc(256 * r + 64 + 63)) == NULL)
-		goto err1;
-	XY = (uint32_t *)(((uintptr_t)(XY0) + 63) & ~ (uintptr_t)(63));
+    if ((B0 = malloc(128 * r * p + 63)) == NULL)
+        goto err0;
+    B = (uint8_t *)(((uintptr_t)(B0) + 63) & ~ (uintptr_t)(63));
+    if ((XY0 = malloc(256 * r + 64 + 63)) == NULL)
+        goto err1;
+    XY = (uint32_t *)(((uintptr_t)(XY0) + 63) & ~ (uintptr_t)(63));
 #ifndef MAP_ANON
-	if ((V0 = malloc(128 * r * N + 63)) == NULL)
-		goto err2;
-	V = (uint32_t *)(((uintptr_t)(V0) + 63) & ~ (uintptr_t)(63));
+    if ((V0 = malloc(128 * r * N + 63)) == NULL)
+        goto err2;
+    V = (uint32_t *)(((uintptr_t)(V0) + 63) & ~ (uintptr_t)(63));
 #endif
 #endif
 #ifdef MAP_ANON
-	if ((V0 = mmap(NULL, 128 * r * N, PROT_READ | PROT_WRITE,
+    if ((V0 = mmap(NULL, 128 * r * N, PROT_READ | PROT_WRITE,
 #ifdef MAP_NOCORE
-	    MAP_ANON | MAP_PRIVATE | MAP_NOCORE,
+        MAP_ANON | MAP_PRIVATE | MAP_NOCORE,
 #else
-	    MAP_ANON | MAP_PRIVATE,
+        MAP_ANON | MAP_PRIVATE,
 #endif
-	    -1, 0)) == MAP_FAILED)
-		goto err2;
-	V = (uint32_t *)(V0);
+        -1, 0)) == MAP_FAILED)
+        goto err2;
+    V = (uint32_t *)(V0);
 #endif
 
-	/* 1: (B_0 ... B_{p-1}) <-- PBKDF2(P, S, 1, p * MFLen) */
-	PBKDF2_SHA256_SCRYPT(passwd, passwdlen, salt, saltlen, 1, B, p * 128 * r);
+    /* 1: (B_0 ... B_{p-1}) <-- PBKDF2(P, S, 1, p * MFLen) */
+    PBKDF2_SHA256_SCRYPT(passwd, passwdlen, salt, saltlen, 1, B, p * 128 * r);
 
-	/* 2: for i = 0 to p - 1 do */
-	for (i = 0; i < p; i++) {
-		/* 3: B_i <-- MF(B_i, N) */
-		smix(&B[i * 128 * r], r, N, V, XY);
-	}
+    /* 2: for i = 0 to p - 1 do */
+    for (i = 0; i < p; i++) {
+        /* 3: B_i <-- MF(B_i, N) */
+        smix(&B[i * 128 * r], r, N, V, XY);
+    }
 
-	/* 5: DK <-- PBKDF2(P, B, 1, dkLen) */
-	PBKDF2_SHA256_SCRYPT(passwd, passwdlen, B, p * 128 * r, 1, buf, buflen);
+    /* 5: DK <-- PBKDF2(P, B, 1, dkLen) */
+    PBKDF2_SHA256_SCRYPT(passwd, passwdlen, B, p * 128 * r, 1, buf, buflen);
 
-	/* Free memory. */
+    /* Free memory. */
 #ifdef MAP_ANON
-	if (munmap(V0, 128 * r * N))
-		goto err2;
+    if (munmap(V0, 128 * r * N))
+        goto err2;
 #else
-	free(V0);
+    free(V0);
 #endif
-	free(XY0);
-	free(B0);
+    free(XY0);
+    free(B0);
 
-	/* Success! */
-	return (0);
+    /* Success! */
+    return (0);
 
 err2:
-	free(XY0);
+    free(XY0);
 err1:
-	free(B0);
+    free(B0);
 err0:
-	/* Failure! */
-	return (-1);
+    /* Failure! */
+    return (-1);
 }
