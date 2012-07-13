@@ -121,7 +121,7 @@ PHP_FUNCTION(scrypt)
 	keyLength = 64;
 	raw_output = 0;
     if (zend_parse_parameters(
-            ZEND_NUM_ARGS() TSRMLS_CC, "ss|llllb",
+            ZEND_NUM_ARGS() TSRMLS_CC, "ssllll|b",
             &password, &password_len, &salt, &salt_len,
             &phpN, &phpR, &phpP, &keyLength, &raw_output
         ) == FAILURE)
