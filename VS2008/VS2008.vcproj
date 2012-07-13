@@ -175,7 +175,7 @@
 			Name="crypto"
 			>
 			<File
-				RelativePath="..\crypto\crypto_scrypt.c"
+				RelativePath="..\crypto\crypto_scrypt-nosse.c"
 				>
 			</File>
 			<File

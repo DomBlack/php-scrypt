@@ -22,7 +22,11 @@
                 "Makefile*",
                 "missing",
                 "mkinstalldirs",
-                "run-tests.php"
+                "run-tests.php",
+                "tests/*.diff",
+                "tests/*.exp",
+                "tests/*.log",
+                "tests/*.out"
             ],
             "folder_exclude_patterns":
             [

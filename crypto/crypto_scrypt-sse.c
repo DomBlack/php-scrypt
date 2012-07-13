@@ -26,6 +26,11 @@
  * This file was originally written by Colin Percival as part of the Tarsnap
  * online backup system.
  */
+#include "php.h"
+#ifdef PHP_WIN32
+#include "zend_config.w32.h"
+#endif
+
 #include <sys/types.h>
 #include <sys/mman.h>
 
@@ -270,16 +275,19 @@ crypto_scrypt(const uint8_t * passwd, size_t passwdlen,
 	/* Sanity-check parameters. */
 #if SIZE_MAX > UINT32_MAX
 	if (buflen > (((uint64_t)(1) << 32) - 1) * 32) {
+		php_error(1, "Invalid Parameters: $keyLength too big");
 		errno = EFBIG;
 		goto err0;
 	}
 #endif
 	if ((uint64_t)(r) * (uint64_t)(p) >= (1 << 30)) {
 		errno = EFBIG;
+		php_error(1, "Invalid Parameters; $r * $p is >= 2^30");
 		goto err0;
 	}
 	if (((N & (N - 1)) != 0) || (N == 0)) {
 		errno = EINVAL;
+		php_error(1, "Invalid Parameters; $N is not a power of two greater than 1");
 		goto err0;
 	}
 	if ((r > SIZE_MAX / 128 / p) ||
@@ -287,6 +295,7 @@ crypto_scrypt(const uint8_t * passwd, size_t passwdlen,
 	    (r > (SIZE_MAX - 64) / 256) ||
 #endif
 	    (N > SIZE_MAX / 128 / r)) {
+		php_error(1, "Invalid Parameters");
 		errno = ENOMEM;
 		goto err0;
 	}
