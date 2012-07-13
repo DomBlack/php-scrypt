@@ -32,11 +32,11 @@
 #ifdef PHP_WIN32
 #include "zend_config.w32.h"
 #endif
+#include "ext/standard/info.h"
+#include "ext/hash/php_hash.h"
 #include "php_scrypt_utils.h"
 #include "php_scrypt.h"
 #include "crypto/crypto_scrypt.h"
-
-#include "ext/standard/base64.h"
 
 static function_entry scrypt_functions[] = {
     PHP_FE(scrypt, NULL)
@@ -98,6 +98,7 @@ PHP_FUNCTION(scrypt)
     long phpP; //1
     long keyLength; //32
 
+    zend_bool raw_output = 0;
 
     //Casted variables for scrypt
     uint64_t cryptN;
@@ -106,16 +107,16 @@ PHP_FUNCTION(scrypt)
 
 
     //Output variables
-    unsigned char *base64;
+    unsigned char *hex;
     unsigned char *buf;
 
     int result;
 
     //Get the parameters for this call
     if (zend_parse_parameters(
-            ZEND_NUM_ARGS() TSRMLS_CC, "ssllll",
+            ZEND_NUM_ARGS() TSRMLS_CC, "ssllll|b",
             &password, &password_len, &salt, &salt_len,
-            &phpN, &phpR, &phpP, &keyLength
+            &phpN, &phpR, &phpP, &keyLength, &raw_output
         ) == FAILURE)
     {
         return;
@@ -156,13 +157,13 @@ PHP_FUNCTION(scrypt)
         RETURN_BOOL(0);
     }
 
-    //Encode the output in base 64
-    base64 = php_base64_encode(buf, keyLength, &result);
-    efree(buf);
-    if (base64 == NULL) {
-        php_error(1, "scrypt error while base 64 encoding");
-        RETURN_BOOL(0);
+    if(!raw_output) {
+        //Encode the output in hex
+        hex = (unsigned char*) emalloc(keyLength * 2 + 1);
+        php_hash_bin2hex(hex, buf, keyLength);
+        efree(buf);
+        RETURN_STRINGL(hex, keyLength * 2, 0);
+    } else {
+        RETURN_STRINGL(buf, keyLength, 0);
     }
-
-    RETURN_STRING(base64, 0);
 }
