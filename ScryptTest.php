@@ -1,7 +1,7 @@
 <?php
 namespace Security\Scrypt;
 
-require_once BASE.'\Security\Scrypt\Scrypt.php';
+require_once 'scrypt.php';
 
 /**
  * Test class for Scrypt.
