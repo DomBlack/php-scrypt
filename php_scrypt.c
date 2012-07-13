@@ -84,7 +84,7 @@ ZEND_GET_MODULE(scrypt)
  * The parameter $keyLength must satisfy; $keyLength <= (2^32 - 1) * 32.
  * The parameter $N must be a power of 2 greater than 1.
  *
- * This function will return a base64 encoded version of the binary hash.
+ * This function will return a hex encoded version of the binary hash.
  */
 PHP_FUNCTION(scrypt)
 {
@@ -100,7 +100,7 @@ PHP_FUNCTION(scrypt)
     long phpP; //1
     long keyLength; //32
 
-    zend_bool raw_output = 0;
+    zend_bool raw_output;
 
     //Casted variables for scrypt
     uint64_t cryptN;
@@ -115,8 +115,13 @@ PHP_FUNCTION(scrypt)
     int result;
 
     //Get the parameters for this call
+	phpN = -1;
+	phpR = -1;
+	phpP = -1;
+	keyLength = 64;
+	raw_output = 0;
     if (zend_parse_parameters(
-            ZEND_NUM_ARGS() TSRMLS_CC, "ssllll|b",
+            ZEND_NUM_ARGS() TSRMLS_CC, "ss|llllb",
             &password, &password_len, &salt, &salt_len,
             &phpN, &phpR, &phpP, &keyLength, &raw_output
         ) == FAILURE)
@@ -129,8 +134,7 @@ PHP_FUNCTION(scrypt)
     cryptR = clampAndCast64("r", phpR);
     cryptP = clampAndCast64("p", phpP);
 
-    if (keyLength < 16)
-    {
+    if (keyLength < 16) {
         keyLength = -1;
         php_error(1, "Key length is too low, must be greater or equal to 16");
     } else if (keyLength > 137438953440) { //(2^32 - 1) * 32
