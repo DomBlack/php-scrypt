@@ -38,6 +38,9 @@
 #include "php_scrypt.h"
 #include "crypto/crypto_scrypt.h"
 #include "crypto/params.h"
+#include "zend_exceptions.h"
+
+static zend_class_entry *spl_ce_BadFunctionCallException;
 
 static function_entry scrypt_functions[] = {
     PHP_FE(scrypt, NULL)
@@ -190,17 +193,24 @@ PHP_FUNCTION(scrypt)
  */
 PHP_FUNCTION(scrypt_pickparams)
 {
+#ifdef PHP_WIN32
+    zend_throw_error_exception(
+        spl_ce_BadFunctionCallException,
+        "Function not implemented in Windows.",
+        0 TSRMLS_CC
+    );
+#else
     long maxmem;
     double memfrac, maxtime;
-    
+
     int cryptN;
     uint32_t cryptR;
     uint32_t cryptP;
-    
+
     long phpN, phpP, phpR;
-    
+
     int rc;
-    
+
     //Get the parameters for this call
     if (zend_parse_parameters(
             ZEND_NUM_ARGS() TSRMLS_CC, "ldd",
@@ -209,25 +219,26 @@ PHP_FUNCTION(scrypt_pickparams)
     {
         return;
     }
-    
+
     if(maxmem < 0 || memfrac < 0 || maxtime < 0) {
         RETURN_FALSE;
     }
-    
+
     rc = pickparams((size_t) maxmem, memfrac, maxtime, &cryptN, &cryptR, &cryptP);
-    
+
     if(rc != 0) {
         php_error(1, "Could not determine scrypt parameters.");
         RETURN_FALSE;
     }
-    
+
     phpN = (long) cryptN;
     phpR = (long) cryptR;
     phpP = (long) cryptP;
-    
+
     array_init(return_value);
     add_assoc_long(return_value, "n", phpN);
     add_assoc_long(return_value, "r", phpR);
     add_assoc_long(return_value, "p", phpP);
     return;
+#endif
 }
