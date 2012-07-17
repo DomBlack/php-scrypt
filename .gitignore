@@ -25,6 +25,16 @@ run-tests.php
 modules
 
 #
+# Test Output
+#
+tests/*.diff
+tests/*.exp
+tests/*.log
+tests/*.out
+tests/*.php
+tests/*.sh
+
+#
 # Visual Studio
 #
 
