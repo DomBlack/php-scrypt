@@ -42,7 +42,7 @@
 
 static zend_class_entry *spl_ce_BadFunctionCallException;
 
-static function_entry scrypt_functions[] = {
+static zend_function_entry scrypt_functions[] = {
     PHP_FE(scrypt, NULL)
     PHP_FE(scrypt_pickparams, NULL)
     {NULL, NULL, NULL}
