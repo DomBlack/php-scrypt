@@ -47,7 +47,20 @@ class Password
      */
     public static function generateSalt($length = 8)
     {
-        return bin2hex(openssl_random_pseudo_bytes($length)); 
+	// Check to see if OpenSSL libraries 
+	if (function_exists('openssl_random_pseudo_bytes')) {
+		return bin2hex(openssl_random_pseudo_bytes($length)); 
+	}
+	// Use less-secure salt-generation method.
+	else {
+		$salt = '';
+		$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#%&*?';
+		$num = strlen($chars) - 1;
+		for ($i = 0; $i < $length; $i++) {
+			$salt .= $chars[mt_rand(0, $num)];
+		}
+		return $salt;	
+	}
     }
 
     /**
