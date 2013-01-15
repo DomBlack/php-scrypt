@@ -47,15 +47,21 @@ class Password
      */
     public static function generateSalt($length = 8)
     {
-        $salt = '';
-        $possibleChars = '0123456789abcdefghijklmnopqrstuvwxyz';
-        $noOfChars = strlen($possibleChars) - 1;
-
-        for ($i = 0; $i < $length; $i++) {
-            $salt .= $possibleChars[mt_rand(0, $noOfChars)];
-        }
-
-        return $salt;
+	// Check to see if OpenSSL libraries 
+	if (function_exists('openssl_random_pseudo_bytes')) {
+		return bin2hex(openssl_random_pseudo_bytes($length)); 
+	}
+	// Use less-secure salt-generation method.
+	else {
+		error_log('php-scrypt warning: OpenSSL not installed!');
+		$salt = '';
+		$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#%&*?';
+		$num = strlen($chars) - 1;
+		for ($i = 0; $i < $length; $i++) {
+			$salt .= $chars[mt_rand(0, $num)];
+		}
+		return $salt;	
+	}
     }
 
     /**
