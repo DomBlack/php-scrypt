@@ -47,15 +47,7 @@ class Password
      */
     public static function generateSalt($length = 8)
     {
-        $salt = '';
-        $possibleChars = '0123456789abcdefghijklmnopqrstuvwxyz';
-        $noOfChars = strlen($possibleChars) - 1;
-
-        for ($i = 0; $i < $length; $i++) {
-            $salt .= $possibleChars[mt_rand(0, $noOfChars)];
-        }
-
-        return $salt;
+        return bin2hex(openssl_random_pseudo_bytes($length)); 
     }
 
     /**
