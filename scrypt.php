@@ -53,6 +53,7 @@ class Password
 	}
 	// Use less-secure salt-generation method.
 	else {
+		error_log('php-scrypt warning: OpenSSL not installed!');
 		$salt = '';
 		$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#%&*?';
 		$num = strlen($chars) - 1;
