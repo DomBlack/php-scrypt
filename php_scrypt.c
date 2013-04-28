@@ -171,8 +171,10 @@ PHP_FUNCTION(scrypt)
         hex = (unsigned char*) emalloc(keyLength * 2 + 1);
         php_hash_bin2hex(hex, buf, keyLength);
         efree(buf);
+        hex[keyLength*2] = '\0';
         RETURN_STRINGL(hex, keyLength * 2, 0);
     } else {
+        buf[keyLength] = '\0';
         RETURN_STRINGL(buf, keyLength, 0);
     }
 }
