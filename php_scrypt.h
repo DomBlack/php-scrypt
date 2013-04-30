@@ -26,11 +26,13 @@
 
 #ifndef PHP_SCRYPT_HEADER
 #define PHP_SCRYPT_HEADER 1
-#define PHP_SCRYPT_VERSION "1.0"
+#define PHP_SCRYPT_VERSION "1.1"
 #define PHP_SCRYPT_EXTNAME "Scrypt"
 
 PHP_FUNCTION(scrypt);
+#ifndef PHP_WIN32
 PHP_FUNCTION(scrypt_pickparams);
+#endif
 
 extern zend_module_entry scrypt_module_entry;
 #define phpext_scrypt_ptr &scrypt_module_entry

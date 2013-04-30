@@ -22,4 +22,8 @@ if test $PHP_SCRYPT != "no"; then
     AC_CHECK_HEADER([emmintrin.h], [version=sse], [version=nosse])
     AC_DEFINE(HAVE_SCRYPT, 1, [Whether you have scrypt])
     PHP_NEW_EXTENSION(scrypt, php_scrypt.c php_scrypt_utils.c crypto/sha256.c crypto/crypto_scrypt-$version.c crypto/params.c, $ext_shared)
+    ifdef([PHP_ADD_EXTENSION_DEP],
+    [
+        PHP_ADD_EXTENSION_DEP(scrypt, hash)
+    ])
 fi

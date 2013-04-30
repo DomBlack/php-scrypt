@@ -229,19 +229,19 @@ crypto_scrypt(const uint8_t * passwd, size_t passwdlen,
     /* Sanity-check parameters. */
 #if SIZE_MAX > UINT32_MAX
     if (buflen > (((uint64_t)(1) << 32) - 1) * 32) {
-        php_error(1, "Invalid Parameters: $keyLength too big");
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid Parameters: $keyLength too big");
         errno = EFBIG;
         goto err0;
     }
 #endif
     if ((uint64_t)(r) * (uint64_t)(p) >= (1 << 30)) {
         errno = EFBIG;
-        php_error(1, "Invalid Parameters; $r * $p is >= 2^30");
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid Parameters; $r * $p is >= 2^30");
         goto err0;
     }
     if (((N & (N - 1)) != 0) || (N == 0)) {
         errno = EINVAL;
-        php_error(1, "Invalid Parameters; $N is not a power of two greater than 1");
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid Parameters; $N is not a power of two greater than 1");
         goto err0;
     }
     if ((r > SIZE_MAX / 128 / p) ||
@@ -250,16 +250,16 @@ crypto_scrypt(const uint8_t * passwd, size_t passwdlen,
 #endif
         (N > SIZE_MAX / 128 / r)) {
         errno = ENOMEM;
-        php_error(1, "Invalid Parameters");
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid Parameters");
         goto err0;
     }
 
     /* Allocate memory. */
-    if ((B = emalloc(128 * r * p)) == NULL)
+    if ((B = safe_emalloc(128, r * p, 0)) == NULL)
         goto err0;
-    if ((XY = emalloc(256 * r)) == NULL)
+    if ((XY = safe_emalloc(256, r, 0)) == NULL)
         goto err1;
-    if ((V = emalloc(128 * r * N)) == NULL)
+    if ((V = safe_emalloc(128, r * N, 0)) == NULL)
         goto err2;
 
     /* 1: (B_0 ... B_{p-1}) <-- PBKDF2(P, S, 1, p * MFLen) */

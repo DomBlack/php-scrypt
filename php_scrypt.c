@@ -38,15 +38,23 @@
 #include "php_scrypt.h"
 #include "crypto/crypto_scrypt.h"
 #include "crypto/params.h"
-#include "zend_exceptions.h"
 
-static zend_class_entry *spl_ce_BadFunctionCallException;
+#include "math.h"
 
 static zend_function_entry scrypt_functions[] = {
     PHP_FE(scrypt, NULL)
+#ifndef PHP_WIN32
     PHP_FE(scrypt_pickparams, NULL)
+#endif
     {NULL, NULL, NULL}
 };
+
+#if ZEND_MODULE_API_NO >= 20050922
+static const zend_module_dep scrypt_deps[] = {
+    ZEND_MOD_REQUIRED("hash")
+    ZEND_MOD_END
+};
+#endif
 
 zend_module_entry scrypt_module_entry = {
 #if ZEND_MODULE_API_NO >= 20010901
@@ -92,10 +100,10 @@ ZEND_GET_MODULE(scrypt)
 PHP_FUNCTION(scrypt)
 {
     //Variables for PHP's parameters
-    char *password;
+    unsigned char *password;
     int password_len;
 
-    char *salt;
+    unsigned char *salt;
     int salt_len;
 
     long phpN; //16384
@@ -109,10 +117,11 @@ PHP_FUNCTION(scrypt)
     uint64_t cryptN;
     uint32_t cryptR;
     uint32_t cryptP;
+    int      castError;
 
 
     //Output variables
-    unsigned char *hex;
+    char *hex;
     unsigned char *buf;
 
     int result;
@@ -133,25 +142,26 @@ PHP_FUNCTION(scrypt)
     }
 
     //Clamp & cast them
-    cryptN = clampAndCast64("N", phpN);
-    cryptR = clampAndCast64("r", phpR);
-    cryptP = clampAndCast64("p", phpP);
+    castError = 0;
+    cryptN = clampAndCast64("N", phpN, &castError);
+    cryptR = clampAndCast32("r", phpR, &castError);
+    cryptP = clampAndCast32("p", phpP, &castError);
 
     if (keyLength < 16) {
         keyLength = -1;
-        php_error(1, "Key length is too low, must be greater or equal to 16");
-    } else if (keyLength > 137438953440) { //(2^32 - 1) * 32
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Key length is too low, must be greater or equal to 16");
+    } else if (keyLength > (powl(2, 32) - 1) * 32) {
         keyLength = -1;
-        php_error(1, "Key length is too high, must be no more than 137438953440");
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Key length is too high, must be no more than (2^32 - 1) * 32");
     }
 
     //Return out if we've encountered a error with the input parameters
-    if (cryptN < 0 || cryptR < 0 || cryptP < 0 || keyLength < 0) {
-        RETURN_BOOL(0);
+    if (castError > 0 || keyLength < 0) {
+        RETURN_FALSE;
     }
 
     //Allocate the memory for the output of the key
-    buf = (unsigned char*)emalloc(keyLength + 1);
+    buf = (unsigned char*)safe_emalloc(1, keyLength, 1);
 
     //Call the scrypt function
     result = crypto_scrypt(
@@ -163,22 +173,23 @@ PHP_FUNCTION(scrypt)
     //Check the crypto returned the hash we wanted.
     if (result != 0) {
         efree(buf);
-        RETURN_BOOL(0);
+        RETURN_FALSE;
     }
 
     if(!raw_output) {
         //Encode the output in hex
-        hex = (unsigned char*) emalloc(keyLength * 2 + 1);
+        hex = (char*) safe_emalloc(2, keyLength, 1);
         php_hash_bin2hex(hex, buf, keyLength);
         efree(buf);
         hex[keyLength*2] = '\0';
         RETURN_STRINGL(hex, keyLength * 2, 0);
     } else {
         buf[keyLength] = '\0';
-        RETURN_STRINGL(buf, keyLength, 0);
+        RETURN_STRINGL((char *)buf, keyLength, 0);
     }
 }
 
+#ifndef PHP_WIN32
 /*
  * Automatically pick parameters for scrypt
  *
@@ -195,13 +206,6 @@ PHP_FUNCTION(scrypt)
  */
 PHP_FUNCTION(scrypt_pickparams)
 {
-#ifdef PHP_WIN32
-    zend_throw_error_exception(
-        spl_ce_BadFunctionCallException,
-        "Function not implemented in Windows.",
-        0 TSRMLS_CC
-    );
-#else
     long maxmem;
     double memfrac, maxtime;
 
@@ -229,7 +233,7 @@ PHP_FUNCTION(scrypt_pickparams)
     rc = pickparams((size_t) maxmem, memfrac, maxtime, &cryptN, &cryptR, &cryptP);
 
     if(rc != 0) {
-        php_error(1, "Could not determine scrypt parameters.");
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Could not determine scrypt parameters.");
         RETURN_FALSE;
     }
 
@@ -242,5 +246,5 @@ PHP_FUNCTION(scrypt_pickparams)
     add_assoc_long(return_value, "r", phpR);
     add_assoc_long(return_value, "p", phpP);
     return;
-#endif
 }
+#endif

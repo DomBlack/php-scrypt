@@ -51,6 +51,8 @@
 #endif
 
 #include "params.h"
+
+#include "crypto/crypto_scrypt.h"
  
 static int memtouse(size_t, double, size_t *);
 static int scryptenc_cpuperf(double * opps);

@@ -29,19 +29,22 @@
 /*
  * Casts a long into a uint64_t.
  *
- * Throws a php fatal error if the value is out of bounds
- * and will return -1
+ * Throws a php error if the value is out of bounds
+ * and will return 0. The error varaible will be set to 1, otherwise
+ * left intact
  */
 uint64_t
-clampAndCast64(const char *variableName, long value)
+clampAndCast64(const char *variableName, long value, int *error)
 {
     if (value <= 0)
     {
-        php_error(1, "%s is too low.", variableName);
-        return -1;
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "%s is too low.", variableName);
+        *error = 1;
+        return 0;
     } else if (value > UINT64_MAX) {
-        php_error(1, "%s is too high.", variableName);
-        return -1;
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "%s is too high.", variableName);
+        *error = 1;
+        return 0;
     }
 
     return (uint64_t)value;
@@ -50,18 +53,21 @@ clampAndCast64(const char *variableName, long value)
 /*
  * Casts a long into a uint32_t.
  *
- * Throws a php fatal error if the value is out of bounds
- * and will return -1
+ * Throws a php error if the value is out of bounds
+ * and will return 0. The error varaible will be set to 1, otherwise
+ * left intact
  */
 uint32_t
-clampAndCast32(const char *variableName, long value)
+clampAndCast32(const char *variableName, long value, int *error)
 {
     if (value <= 0)
     {
-        php_error(1, "%s is too low.", variableName);
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "%s is too low.", variableName);
+        *error = 1;
         return -1;
     } else if (value > UINT32_MAX) {
-        php_error(1, "%s is too high.", variableName);
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "%s is too high.", variableName);
+        *error = 1;
         return -1;
     }
 

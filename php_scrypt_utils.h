@@ -40,19 +40,21 @@
 /*
  * Casts a long into a uint64_t.
  *
- * Throws a php fatal error if the value is out of bounds
- * and will return -1
+ * Throws a php error if the value is out of bounds
+ * and will return 0. The error varaible will be set to 1, otherwise
+ * left intact
  */
 uint64_t
-clampAndCast64(const char *variableName, long value);
+clampAndCast64(const char *variableName, long value, int *error);
 
 /*
  * Casts a long into a uint32_t.
  *
- * Throws a php fatal error if the value is out of bounds
- * and will return -1
+ * Throws a php error if the value is out of bounds
+ * and will return 0. The error varaible will be set to 1, otherwise
+ * left intact
  */
 uint32_t
-clampAndCast32(const char *variableName, long value);
+clampAndCast32(const char *variableName, long value, int *error);
 
 #endif
