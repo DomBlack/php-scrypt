@@ -1,0 +1,18 @@
+language: php
+php:
+  - 5.2
+  - 5.3
+  - 5.4
+  - 5.5
+env:
+  - REPORT_EXIT_STATUS=1
+    NO_INTERACTION=1
+before_script:
+  - phpize
+  - ./configure --enable-scrypt
+  - make all
+script: TEST_PHP_EXECUTABLE=$(which php) php -n
+    -d open_basedir= -d output_buffering=0 -d memory_limit=-1
+    run-tests.php -n
+    -d extension_dir=modules -d extension=scrypt.so --show-diff
+    tests

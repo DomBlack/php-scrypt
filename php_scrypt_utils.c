@@ -36,6 +36,7 @@
 uint64_t
 clampAndCast64(const char *variableName, long value, int *error)
 {
+    TSRMLS_FETCH();
     if (value <= 0)
     {
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "%s is too low.", variableName);
@@ -60,6 +61,7 @@ clampAndCast64(const char *variableName, long value, int *error)
 uint32_t
 clampAndCast32(const char *variableName, long value, int *error)
 {
+    TSRMLS_FETCH();
     if (value <= 0)
     {
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "%s is too low.", variableName);

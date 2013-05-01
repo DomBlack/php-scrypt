@@ -32,7 +32,6 @@
 #ifdef PHP_WIN32
 #include "zend_config.w32.h"
 #endif
-#include "ext/standard/info.h"
 #include "ext/hash/php_hash.h"
 #include "php_scrypt_utils.h"
 #include "php_scrypt.h"
@@ -52,7 +51,7 @@ static zend_function_entry scrypt_functions[] = {
 #if ZEND_MODULE_API_NO >= 20050922
 static const zend_module_dep scrypt_deps[] = {
     ZEND_MOD_REQUIRED("hash")
-    ZEND_MOD_END
+    {NULL, NULL, NULL}
 };
 #endif
 

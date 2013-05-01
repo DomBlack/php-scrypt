@@ -272,6 +272,8 @@ crypto_scrypt(const uint8_t * passwd, size_t passwdlen,
     uint32_t * XY;
     uint32_t i;
 
+    TSRMLS_FETCH();
+
     /* Sanity-check parameters. */
 #if SIZE_MAX > UINT32_MAX
     if (buflen > (((uint64_t)(1) << 32) - 1) * 32) {

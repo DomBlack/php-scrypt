@@ -1,6 +1,8 @@
 PHP scrypt module
 =================
 
+[![Build Status](https://www.travis-ci.org/DomBlack/php-scrypt.png?branch=master)](https://www.travis-ci.org/DomBlack/php-scrypt)
+
 This is a PHP library providing a wrapper to [Colin Percival's scrypt implementation](http://www.tarsnap.com/scrypt.html). Scrypt is a key derivation function designed to be far more secure against hardware brute-force attacks than alternative functions such as PBKDF2 or bcrypt.
 
 Details of the scrypt key derivation function are given in a paper by Colin Percival, Stronger Key Derivation via Sequential Memory-Hard Functions: [PDF](http://www.tarsnap.com/scrypt/scrypt-slides.pdf).
