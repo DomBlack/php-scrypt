@@ -5,6 +5,9 @@ if test $PHP_SCRYPT != "no"; then
     PHP_ADD_INCLUDE(crypto)
     PHP_ADD_BUILD_DIR(crypto)
 
+    PHP_SUBST(SCRYPT_SHARED_LIBADD)
+    PHP_CHECK_LIBRARY(rt, clock_gettime, [PHP_ADD_LIBRARY(rt,, SCRYPT_SHARED_LIBADD)])
+
     AH_TEMPLATE(HAVE_SYSCTL_HW_USERMEM, [Define if the hw.usermem property exists in sysctl.])
     if sysctl hw.usermem >/dev/null 2>/dev/null; then
         AC_DEFINE(HAVE_SYSCTL_HW_USERMEM, 1)
@@ -22,6 +25,7 @@ if test $PHP_SCRYPT != "no"; then
     AC_CHECK_HEADER([emmintrin.h], [version=sse], [version=nosse])
     AC_DEFINE(HAVE_SCRYPT, 1, [Whether you have scrypt])
     PHP_NEW_EXTENSION(scrypt, php_scrypt.c php_scrypt_utils.c crypto/sha256.c crypto/crypto_scrypt-$version.c crypto/params.c, $ext_shared)
+
     ifdef([PHP_ADD_EXTENSION_DEP],
     [
         PHP_ADD_EXTENSION_DEP(scrypt, hash)
