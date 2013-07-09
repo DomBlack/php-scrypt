@@ -31,12 +31,7 @@ class Password
     /**
      * @var int The key length
      */
-    private static $_keyLength = 32;
-
-    /**
-     * @var An application pepper (set to null for none)
-     */
-    private static $_pepper = 'qi$1IeXl?$Oa_ia7';
+    private static $keyLength = 32;
 
     /**
      * Generates a random salt
@@ -47,21 +42,19 @@ class Password
      */
     public static function generateSalt($length = 8)
     {
-	// Check to see if OpenSSL libraries 
-	if (function_exists('openssl_random_pseudo_bytes')) {
-		return bin2hex(openssl_random_pseudo_bytes($length)); 
-	}
-	// Use less-secure salt-generation method.
-	else {
-		error_log('php-scrypt warning: OpenSSL not installed!');
-		$salt = '';
-		$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#%&*?';
-		$num = strlen($chars) - 1;
-		for ($i = 0; $i < $length; $i++) {
-			$salt .= $chars[mt_rand(0, $num)];
-		}
-		return $salt;	
-	}
+        // Check to see if OpenSSL libraries
+        if (function_exists('openssl_random_pseudo_bytes')) {
+            return bin2hex(openssl_random_pseudo_bytes($length));
+        } else { // Use less-secure salt-generation method.
+            error_log('php-scrypt warning: OpenSSL not installed!');
+            $salt = '';
+            $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#%&*?';
+            $num = strlen($chars) - 1;
+            for ($i = 0; $i < $length; $i++) {
+                $salt .= $chars[mt_rand(0, $num)];
+            }
+            return $salt;
+        }
     }
 
     /**
@@ -75,9 +68,8 @@ class Password
      *
      * @return string The hashed password
      */
-    public static function hash(
-        $password, $salt = false, $N = 16384, $r = 8, $p = 1
-    ) {
+    public static function hash($password, $salt = false, $N = 16384, $r = 8, $p = 1)
+    {
         if ($salt === false) {
             $salt = self::generateSalt();
         } else {
@@ -85,7 +77,7 @@ class Password
             $salt = str_replace('$', '', $salt);
         }
 
-        $hash = scrypt($password, self::$_pepper.$salt, $N, $r, $p, self::$_keyLength);
+        $hash = scrypt($password, $salt, $N, $r, $p, self::$keyLength);
 
         return $N.'$'.$r.'$'.$p.'$'.$salt.'$'.$hash;
     }
@@ -100,16 +92,62 @@ class Password
      */
     public static function check($password, $hash)
     {
+        // Is there actually a hash?
+        if (!strlen($hash)) {
+            return false;
+        }
+
         list($N, $r, $p, $salt, $hash) = explode('$', $hash);
 
-        $calculated = scrypt(
-            $password, self::$_pepper.$salt,
-            $N, $r, $p,
-            self::$_keyLength
-        );
+        // No empty fields?
+        if (empty($N) or empty($r) or empty($p) or empty($salt) or empty($hash)) {
+            return false;
+        }
 
-        return ($calculated == $hash);
+        // Are numeric values numeric?
+        if (!is_numeric($N) or !is_numeric($r) or !is_numeric($p)) {
+            return false;
+        }
+
+        $calculated = scrypt($password, $salt, $N, $r, $p, self::$keyLength);
+
+        // Use compareStrings to avoid timeing attacks
+        return self::compareStrings($hash, $calculated);
+    }
+
+    /**
+     * Zend Framework (http://framework.zend.com/)
+     *
+     * @link      http://github.com/zendframework/zf2 for the canonical source repository
+     * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+     * @license   http://framework.zend.com/license/new-bsd New BSD License
+     *
+     *
+     * Compare two strings to avoid timing attacks
+     *
+     * C function memcmp() internally used by PHP, exits as soon as a difference
+     * is found in the two buffers. That makes possible of leaking
+     * timing information useful to an attacker attempting to iteratively guess
+     * the unknown string (e.g. password).
+     *
+     * @param  string $expected
+     * @param  string $actual
+     * @return bool
+     */
+    public static function compareStrings($expected, $actual)
+    {
+        $expected     = (string) $expected;
+        $actual       = (string) $actual;
+        $lenExpected  = strlen($expected);
+        $lenActual    = strlen($actual);
+        $len          = min($lenExpected, $lenActual);
+
+        $result = 0;
+        for ($i = 0; $i < $len; $i++) {
+            $result |= ord($expected[$i]) ^ ord($actual[$i]);
+        }
+        $result |= $lenExpected ^ $lenActual;
+
+        return ($result === 0);
     }
 }
-
-?>
