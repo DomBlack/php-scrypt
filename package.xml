@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package 
+ packagerversion="1.4.11" 
+ version="2.0" 
+ xmlns="http://pear.php.net/dtd/package-2.0" 
+ xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" 
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+http://pear.php.net/dtd/tasks-1.0.xsd
+http://pear.php.net/dtd/package-2.0
+http://pear.php.net/dtd/package-2.0.xsd">
+ <name>scrypt</name>
+ <channel>pecl.php.net</channel>
+ <summary>Scrypt hashing function</summary>
+ <description>A PHP wrapper to Colin Percival's scrypt implementation.</description>
+ <lead>
+   <name>Dominic Black</name>
+   <user>dom</user>
+   <email>thephenix@gmail.com</email>
+   <active>yes</active>
+ </lead>
+ <date>2013-07-15</date>
+ <version>
+  <release>1.2</release>
+  <api>1.2</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license uri="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</license>
+ <notes>Initial release to PECL, plus various changes to the example PHP file</notes>
+ <contents>
+  <dir name="/">
+   <file name="config.m4" role="src" />
+   <file name="config.w32" role="src" />
+   <file name="CREDITS" role="src" />
+   <file name="php_scrypt.c" role="src" />
+   <file name="php_scrypt.h" role="src" />
+   <file name="php_scrypt_utils.c" role="src" />
+   <file name="php_scrypt_utils.h" role="src" />
+   <file name="README.md" role="src" />
+   <file name="scrypt.php" role="doc" />
+   <dir name="crypto">
+    <file name="crypto_scrypt-nosse.c" role="src" />
+    <file name="crypto_scrypt-sse.c" role="src" />
+    <file name="crypto_scrypt.h" role="src" />
+    <file name="params.c" role="src" />
+    <file name="params.h" role="src" />
+    <file name="README" role="src" />
+    <file name="sha256.c" role="src" />
+    <file name="sha256.h" role="src" />
+    <file name="sysendian.h" role="src" />
+   </dir>
+   <dir name="tests">
+    <file role="test" name="params.phpt" />
+    <file role="test" name="vectors.phpt" />
+   </dir>
+  </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>5.2</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.0</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <providesextension>scrypt</providesextension>
+ <extsrcrelease>
+  <configureoption default="yes" name="enable-scrypt" prompt="whether to enable scrypt support" />
+ </extsrcrelease>
+ <changelog>
+  <release>
+    <version>
+      <release>1.1</release>
+      <api>1.1</api>
+    </version>
+    <stability>
+     <release>stable</release>
+     <api>stable</api>
+    </stability>
+    <date>2012-07-17</date>
+    <license uri="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</license>
+    <notes>
+      Addition of scrypt_pickparams function
+    </notes>
+  </release>
+  <release>
+    <version>
+      <release>1.0</release>
+      <api>1.0</api>
+    </version>
+    <stability>
+     <release>stable</release>
+     <api>stable</api>
+    </stability>
+    <date>2012-07-12</date>
+    <license uri="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</license>
+    <notes>
+      Initial release
+    </notes>
+  </release>
+ </changelog>
+</package>

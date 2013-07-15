@@ -314,7 +314,7 @@ HMAC_SHA256_Init_SCRYPT(HMAC_SHA256_CTX * ctx, const void * _K, size_t Klen)
     for (i = 0; i < Klen; i++)
         pad[i] ^= K[i];
 
-    SHA256_Update_SCRYPT(&ctx->ictx, pad, 64); //BOOKMARK: This one
+    SHA256_Update_SCRYPT(&ctx->ictx, pad, 64);
 
     /* Outer SHA256 operation is SHA256(K xor [block of 0x5c] || hash). */
     SHA256_Init_SCRYPT(&ctx->octx);

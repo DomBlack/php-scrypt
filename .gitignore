@@ -1,4 +1,9 @@
 #
+# Pecl Package Files
+#
+scrypt-*.tgz
+
+#
 # phpize & make related files
 #
 

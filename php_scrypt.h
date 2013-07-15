@@ -26,8 +26,8 @@
 
 #ifndef PHP_SCRYPT_HEADER
 #define PHP_SCRYPT_HEADER 1
-#define PHP_SCRYPT_VERSION "1.1"
-#define PHP_SCRYPT_EXTNAME "Scrypt"
+#define PHP_SCRYPT_VERSION "1.2"
+#define PHP_SCRYPT_EXTNAME "scrypt"
 
 PHP_FUNCTION(scrypt);
 #ifndef PHP_WIN32

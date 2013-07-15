@@ -40,10 +40,29 @@
 
 #include "math.h"
 
-static zend_function_entry scrypt_functions[] = {
-    PHP_FE(scrypt, NULL)
+/* {{{ arginfo */
+ZEND_BEGIN_ARG_INFO_EX(scrypt_arginfo, 0, 0, 6)
+    ZEND_ARG_INFO(0, password)
+    ZEND_ARG_INFO(0, salt)
+    ZEND_ARG_INFO(0, N)
+    ZEND_ARG_INFO(0, r)
+    ZEND_ARG_INFO(0, p)
+    ZEND_ARG_INFO(0, keyLength)
+ZEND_END_ARG_INFO()
+
 #ifndef PHP_WIN32
-    PHP_FE(scrypt_pickparams, NULL)
+ZEND_BEGIN_ARG_INFO_EX(scrypt_pickparams_arginfo, 0, 0, 3)
+    ZEND_ARG_INFO(0, maxMemory)
+    ZEND_ARG_INFO(0, memFraction)
+    ZEND_ARG_INFO(0, maxTime)
+ZEND_END_ARG_INFO()
+#endif
+/* }}} */
+
+static zend_function_entry scrypt_functions[] = {
+    PHP_FE(scrypt, scrypt_arginfo)
+#ifndef PHP_WIN32
+    PHP_FE(scrypt_pickparams, scrypt_pickparams_arginfo)
 #endif
     {NULL, NULL, NULL}
 };
@@ -76,11 +95,8 @@ zend_module_entry scrypt_module_entry = {
 ZEND_GET_MODULE(scrypt)
 #endif
 
-/*
- * The scrypt wrapper for PHP
- *
- * This takes a call such as:
- *   scrypt($password, $salt, $N, $r, $p)
+/* {{{ proto string scrypt(string password, string salt, long N, int r, int p, int keyLength)
+ * Returns the scrypt hash for the given password.
  *
  * Where;
  *     string $password  The user's password
@@ -98,34 +114,34 @@ ZEND_GET_MODULE(scrypt)
  */
 PHP_FUNCTION(scrypt)
 {
-    //Variables for PHP's parameters
+    /* Variables for PHP's parameters */
     unsigned char *password;
     int password_len;
 
     unsigned char *salt;
     int salt_len;
 
-    long phpN; //16384
-    long phpR; //8
-    long phpP; //1
-    long keyLength; //32
+    long phpN;
+    long phpR;
+    long phpP;
+    long keyLength;
 
     zend_bool raw_output;
 
-    //Casted variables for scrypt
+    /* Casted variables for scrypt */
     uint64_t cryptN;
     uint32_t cryptR;
     uint32_t cryptP;
     int      castError;
 
 
-    //Output variables
+    /* Output variables */
     char *hex;
     unsigned char *buf;
 
     int result;
 
-    //Get the parameters for this call
+    /* Get the parameters for this call */
     phpN = -1;
     phpR = -1;
     phpP = -1;
@@ -140,7 +156,7 @@ PHP_FUNCTION(scrypt)
         return;
     }
 
-    //Clamp & cast them
+    /* Clamp & cast them */
     castError = 0;
     cryptN = clampAndCast64("N", phpN, &castError);
     cryptR = clampAndCast32("r", phpR, &castError);
@@ -154,29 +170,29 @@ PHP_FUNCTION(scrypt)
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "Key length is too high, must be no more than (2^32 - 1) * 32");
     }
 
-    //Return out if we've encountered a error with the input parameters
+    /* Return out if we've encountered a error with the input parameters */
     if (castError > 0 || keyLength < 0) {
         RETURN_FALSE;
     }
 
-    //Allocate the memory for the output of the key
+    /* Allocate the memory for the output of the key */
     buf = (unsigned char*)safe_emalloc(1, keyLength, 1);
 
-    //Call the scrypt function
+    /* Call the scrypt function */
     result = crypto_scrypt(
-        password, password_len, salt, salt_len, //Input
-        cryptN, cryptR, cryptP, //Settings
-        buf, keyLength //Output
+        password, password_len, salt, salt_len, /* Input */
+        cryptN, cryptR, cryptP, /* Settings */
+        buf, keyLength /* Output */
     );
 
-    //Check the crypto returned the hash we wanted.
+    /* Check the crypto returned the hash we wanted. */
     if (result != 0) {
         efree(buf);
         RETURN_FALSE;
     }
 
     if(!raw_output) {
-        //Encode the output in hex
+        /* Encode the output in hex */
         hex = (char*) safe_emalloc(2, keyLength, 1);
         php_hash_bin2hex(hex, buf, keyLength);
         efree(buf);
@@ -187,21 +203,16 @@ PHP_FUNCTION(scrypt)
         RETURN_STRINGL((char *)buf, keyLength, 0);
     }
 }
+/* }}} */
 
 #ifndef PHP_WIN32
-/*
- * Automatically pick parameters for scrypt
- *
- * This takes a call such as:
- *   scrypt_pickparams($maxmem, $memfrac, $maxtime)
+/* {{{ proto array scrypt_pickparams(long maxMemory, double memFraction, double maxTime)
+ * Returns N, r and p picked automatically for use with the scrypt function.
  *
  * Where;
- *     long   $maxmem  Maximum amount of memory to use
- *     double $memfrac Maximum fraction of available memory to use
- *     double $maxtime Maximum CPU time to use
- *
- * This function will return an array with the N, r, and p
- * parameters for use in the scrypt() function.
+ *     long   $maxMem  Maximum amount of memory to use
+ *     double $memFrac Maximum fraction of available memory to use
+ *     double $maxTime Maximum CPU time to use
  */
 PHP_FUNCTION(scrypt_pickparams)
 {
@@ -216,7 +227,7 @@ PHP_FUNCTION(scrypt_pickparams)
 
     int rc;
 
-    //Get the parameters for this call
+    /* Get the parameters for this call */
     if (zend_parse_parameters(
             ZEND_NUM_ARGS() TSRMLS_CC, "ldd",
             &maxmem, &memfrac, &maxtime
@@ -246,4 +257,5 @@ PHP_FUNCTION(scrypt_pickparams)
     add_assoc_long(return_value, "p", phpP);
     return;
 }
+/* }}} */
 #endif
