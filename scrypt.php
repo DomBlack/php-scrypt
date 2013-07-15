@@ -1,6 +1,9 @@
 <?php
 /**
- * This file contains wrapper and helper classes for the scrypt extension.
+ * This file contains an example helper classes for the php-scrypt extension.
+ *
+ * As with all cryptographic code; it is recommended that you use a tried and
+ * tested library which uses this library; rather than rolling your own.
  *
  * PHP version 5
  *
@@ -13,8 +16,6 @@
 
 /**
  * This class abstracts away from scrypt module, allowing for easy use.
- *
- * Change the application pepper to something random for yourself.
  *
  * You can create a new hash for a password by calling Password::hash($password)
  *
@@ -31,7 +32,7 @@ class Password
     /**
      * @var int The key length
      */
-    private static $keyLength = 32;
+    private static $_keyLength = 32;
 
     /**
      * Generates a random salt
@@ -42,19 +43,15 @@ class Password
      */
     public static function generateSalt($length = 8)
     {
-        // Check to see if OpenSSL libraries
-        if (function_exists('openssl_random_pseudo_bytes')) {
-            return bin2hex(openssl_random_pseudo_bytes($length));
-        } else { // Use less-secure salt-generation method.
-            error_log('php-scrypt warning: OpenSSL not installed!');
-            $salt = '';
-            $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#%&*?';
-            $num = strlen($chars) - 1;
-            for ($i = 0; $i < $length; $i++) {
-                $salt .= $chars[mt_rand(0, $num)];
-            }
-            return $salt;
+        $salt = '';
+        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#%&*?';
+        $num = strlen($chars) - 1;
+
+        for ($i = 0; $i < $length; $i++) {
+            $salt .= $chars[mt_rand(0, $num)];
         }
+
+        return $salt;
     }
 
     /**
@@ -77,7 +74,7 @@ class Password
             $salt = str_replace('$', '', $salt);
         }
 
-        $hash = scrypt($password, $salt, $N, $r, $p, self::$keyLength);
+        $hash = scrypt($password, $salt, $N, $r, $p, self::$_keyLength);
 
         return $N.'$'.$r.'$'.$p.'$'.$salt.'$'.$hash;
     }
@@ -109,7 +106,7 @@ class Password
             return false;
         }
 
-        $calculated = scrypt($password, $salt, $N, $r, $p, self::$keyLength);
+        $calculated = scrypt($password, $salt, $N, $r, $p, self::$_keyLength);
 
         // Use compareStrings to avoid timeing attacks
         return self::compareStrings($hash, $calculated);
@@ -132,7 +129,8 @@ class Password
      *
      * @param  string $expected
      * @param  string $actual
-     * @return bool
+     *
+     * @return boolean If the two strings match.
      */
     public static function compareStrings($expected, $actual)
     {
