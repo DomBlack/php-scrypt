@@ -27,10 +27,14 @@ This library is written and maintained by Dominic Black, <thephenix@gmail.com>.
 
 ----
 
-Precompiled Binarys
-===================
+PECL Install
+============
 
-If you don't want to compile from source check out the [downloads page](https://github.com/DomBlack/php-scrypt/downloads) for precompiled binarys.
+This extension is now avaible through PECL.
+
+```
+pecl install scrypt
+```
 
 Build From Source
 =================
