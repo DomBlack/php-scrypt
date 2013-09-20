@@ -30,9 +30,7 @@
 #define PHP_SCRYPT_EXTNAME "scrypt"
 
 PHP_FUNCTION(scrypt);
-#ifndef PHP_WIN32
 PHP_FUNCTION(scrypt_pickparams);
-#endif
 
 extern zend_module_entry scrypt_module_entry;
 #define phpext_scrypt_ptr &scrypt_module_entry

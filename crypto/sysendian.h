@@ -40,7 +40,11 @@
 
 #else
 
-#include <stdint.h>
+#ifdef PHP_WIN32
+# include "win32/php_stdint.h"
+#else
+# include <stdint.h>
+#endif
 
 static inline uint32_t
 be32dec(const void *pp)

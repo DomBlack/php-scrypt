@@ -50,20 +50,16 @@ ZEND_BEGIN_ARG_INFO_EX(scrypt_arginfo, 0, 0, 6)
     ZEND_ARG_INFO(0, keyLength)
 ZEND_END_ARG_INFO()
 
-#ifndef PHP_WIN32
 ZEND_BEGIN_ARG_INFO_EX(scrypt_pickparams_arginfo, 0, 0, 3)
     ZEND_ARG_INFO(0, maxMemory)
     ZEND_ARG_INFO(0, memFraction)
     ZEND_ARG_INFO(0, maxTime)
 ZEND_END_ARG_INFO()
-#endif
 /* }}} */
 
 static zend_function_entry scrypt_functions[] = {
     PHP_FE(scrypt, scrypt_arginfo)
-#ifndef PHP_WIN32
     PHP_FE(scrypt_pickparams, scrypt_pickparams_arginfo)
-#endif
     {NULL, NULL, NULL}
 };
 
@@ -205,7 +201,6 @@ PHP_FUNCTION(scrypt)
 }
 /* }}} */
 
-#ifndef PHP_WIN32
 /* {{{ proto array scrypt_pickparams(long maxMemory, double memFraction, double maxTime)
  * Returns N, r and p picked automatically for use with the scrypt function.
  *
@@ -258,4 +253,3 @@ PHP_FUNCTION(scrypt_pickparams)
     return;
 }
 /* }}} */
-#endif
