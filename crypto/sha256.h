@@ -31,7 +31,11 @@
 
 #include <sys/types.h>
 
-#include <stdint.h>
+#ifdef PHP_WIN32
+# include "win32/php_stdint.h"
+#else
+# include <stdint.h>
+#endif
 
 typedef struct SHA256Context {
     uint32_t state[8];

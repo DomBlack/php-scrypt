@@ -1,7 +1,13 @@
 ARG_ENABLE("scrypt", "whether to enable scrypt support", "no");
 
 if (PHP_SCRYPT != "no") {
-    version=nosse
-    EXTENSION("scrypt", "php_scrypt.c php_scrypt_utils.c crypto/sha256.c crypto/crypto_scrypt-nosse.c crypto/params.c");
-    ADD_EXTENSION_DEP('scrypt', 'hash');
+	if (CHECK_HEADER_ADD_INCLUDE("crypto/crypto_scrypt.h", "CFLAGS_SCRYPT", PHP_SCRYPT + ";" + configure_module_dirname)) {
+		EXTENSION("scrypt", "php_scrypt.c php_scrypt_utils.c");
+
+		ADD_SOURCES(configure_module_dirname + "\\crypto", "sha256.c crypto_scrypt-nosse.c params.c", "scrypt");
+
+		ADD_EXTENSION_DEP('scrypt', 'hash');
+	} else {
+		WARNING("scrypt not enabled, headers not found");
+	}
 }

@@ -28,12 +28,19 @@
  */
 
 #include <stddef.h>
-#include <stdint.h>
-#include <unistd.h>
+#ifdef PHP_WIN32
+# include "win32/time.h"
+# include "win32/php_stdint.h"
+#else
+# include <stdint.h>
+# include <unistd.h>
+#endif
 #include <errno.h>
 #include <time.h>
-#include <sys/time.h>
-#include <sys/resource.h>
+#ifndef PHP_WIN32
+# include <sys/time.h>
+# include <sys/resource.h>
+#endif
 #include <sys/types.h>
 
 #ifdef HAVE_CONFIG_H
@@ -392,6 +399,13 @@ memlimit_sysinfo(size_t * memlimit)
 }
 #endif /* HAVE_SYSINFO */
 
+#ifdef _WIN32
+static int
+memlimit_rlimit(size_t * memlimit)
+{
+        return (0);
+}
+#else
 static int
 memlimit_rlimit(size_t * memlimit)
 {
@@ -441,6 +455,7 @@ memlimit_rlimit(size_t * memlimit)
     /* Success! */
     return (0);
 }
+#endif
 
 #ifdef _SC_PHYS_PAGES
 

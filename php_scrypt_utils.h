@@ -35,7 +35,11 @@
 #include "zend_config.w32.h"
 #endif
 #include "php.h"
-#include <stdint.h>
+#ifdef PHP_WIN32
+# include "win32/php_stdint.h"
+#else
+# include <stdint.h>
+#endif
 
 /*
  * Casts a long into a uint64_t.
