@@ -33,7 +33,11 @@
 #endif
 
 #include <errno.h>
-#include <stdint.h>
+#ifdef PHP_WIN32
+# include "win32/php_stdint.h"
+#else
+# include <stdint.h>
+#endif
 #include <stdlib.h>
 #include <string.h>
 
