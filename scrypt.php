@@ -23,10 +23,10 @@
  * You can check a password by calling Password::check($password, $hash)
  *
  * @category Security
- * @package Scrypt
- * @author Dominic Black <thephenix@gmail.com>
- * @license http://www.opensource.org/licenses/BSD-2-Clause BSD 2-Clause License
- * @link http://github.com/DomBlack/php-scrypt
+ * @package  Scrypt
+ * @author   Dominic Black <thephenix@gmail.com>
+ * @license  http://www.opensource.org/licenses/BSD-2-Clause BSD 2-Clause License
+ * @link     http://github.com/DomBlack/php-scrypt
  */
 abstract class Password
 {
@@ -92,10 +92,10 @@ abstract class Password
      * Create a password hash
      *
      * @param string $password The clear text password
-     * @param string $salt The salt to use, or null to generate a random one
-     * @param int $N The CPU difficultly (must be a power of 2, > 1)
-     * @param int $r The memory difficultly
-     * @param int $p The parallel difficultly
+     * @param string $salt     The salt to use, or null to generate a random one
+     * @param int    $N        The CPU difficultly (must be a power of 2, > 1)
+     * @param int    $r        The memory difficultly
+     * @param int    $p        The parallel difficultly
      *
      * @return string The hashed password
      */
@@ -129,7 +129,7 @@ abstract class Password
      * Check a clear text password against a hash
      *
      * @param string $password The clear text password
-     * @param string $hash The hashed password
+     * @param string $hash     The hashed password
      *
      * @return boolean If the clear text matches
      */
@@ -161,16 +161,16 @@ abstract class Password
     /**
      * Zend Framework (http://framework.zend.com/)
      *
-     * @link http://github.com/zendframework/zf2 for the canonical source repository
+     * @link      http://github.com/zendframework/zf2 for the canonical source repository
      * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
-     * @license http://framework.zend.com/license/new-bsd New BSD License
+     * @license   http://framework.zend.com/license/new-bsd New BSD License
      *
-     *          Compare two strings to avoid timing attacks
+     * Compare two strings to avoid timing attacks
      *
-     *          C function memcmp() internally used by PHP, exits as soon as a difference
-     *          is found in the two buffers. That makes possible of leaking
-     *          timing information useful to an attacker attempting to iteratively guess
-     *          the unknown string (e.g. password).
+     * C function memcmp() internally used by PHP, exits as soon as a difference
+     * is found in the two buffers. That makes possible of leaking
+     * timing information useful to an attacker attempting to iteratively guess
+     * the unknown string (e.g. password).
      *
      * @param string $expected
      * @param string $actual
@@ -179,11 +179,11 @@ abstract class Password
      */
     public static function compareStrings($expected, $actual)
     {
-        $expected = (string) $expected;
-        $actual = (string) $actual;
+        $expected    = (string) $expected;
+        $actual      = (string) $actual;
         $lenExpected = strlen($expected);
-        $lenActual = strlen($actual);
-        $len = min($lenExpected, $lenActual);
+        $lenActual   = strlen($actual);
+        $len         = min($lenExpected, $lenActual);
 
         $result = 0;
         for ($i = 0; $i < $len; $i ++) {
