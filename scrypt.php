@@ -28,7 +28,7 @@
  * @license http://www.opensource.org/licenses/BSD-2-Clause BSD 2-Clause License
  * @link http://github.com/DomBlack/php-scrypt
  */
-class Password
+abstract class Password
 {
 
     /**
@@ -83,7 +83,7 @@ class Password
                 }
             }
         }
-        $salt = str_replace('+', '.', base64_encode($buffer));
+        $salt = str_replace(array('+', '$'), array('.', ''), base64_encode($buffer));
 
         return $salt;
     }
@@ -101,6 +101,18 @@ class Password
      */
     public static function hash($password, $salt = false, $N = 16384, $r = 8, $p = 1)
     {
+        if ($N == 0 || ($N & ($N - 1)) != 0) {
+            throw new \InvalidArgumentException("N must be > 0 and a power of 2");
+        }
+
+        if ($N > PHP_INT_MAX / 128 / $r) {
+            throw new \InvalidArgumentException("Parameter N is too large");
+        }
+
+        if ($r > PHP_INT_MAX / 128 / $p) {
+            throw new \InvalidArgumentException("Parameter r is too large");
+        }
+
         if ($salt === false) {
             $salt = self::generateSalt();
         } else {
@@ -116,10 +128,8 @@ class Password
     /**
      * Check a clear text password against a hash
      *
-     * @param string $password
-     *            The clear text password
-     * @param string $hash
-     *            The hashed password
+     * @param string $password The clear text password
+     * @param string $hash The hashed password
      *
      * @return boolean If the clear text matches
      */
