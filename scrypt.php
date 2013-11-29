@@ -35,7 +35,7 @@ abstract class Password
      *
      * @var int The key length
      */
-    private static $keyLength = 32;
+    private static $_keyLength = 32;
 
     /**
      * Generates a random salt
@@ -48,20 +48,20 @@ abstract class Password
     {
         $buffer = '';
         $buffer_valid = false;
-        if (function_exists('mcrypt_create_iv') && ! defined('PHALANGER')) {
+        if (function_exists('mcrypt_create_iv') && !defined('PHALANGER')) {
             $buffer = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
             if ($buffer) {
                 $buffer_valid = true;
             }
         }
-        if (! $buffer_valid && function_exists('openssl_random_pseudo_bytes')) {
+        if (!$buffer_valid && function_exists('openssl_random_pseudo_bytes')) {
             $cryptoStrong = false;
             $buffer = openssl_random_pseudo_bytes($length, $cryptoStrong);
             if ($buffer && $cryptoStrong) {
                 $buffer_valid = true;
             }
         }
-        if (! $buffer_valid && is_readable('/dev/urandom')) {
+        if (!$buffer_valid && is_readable('/dev/urandom')) {
             $f = fopen('/dev/urandom', 'r');
             $read = strlen($buffer);
             while ($read < $length) {
@@ -73,9 +73,9 @@ abstract class Password
                 $buffer_valid = true;
             }
         }
-        if (! $buffer_valid || strlen($buffer) < $length) {
+        if (!$buffer_valid || strlen($buffer) < $length) {
             $bl = strlen($buffer);
-            for ($i = 0; $i < $length; $i ++) {
+            for ($i = 0; $i < $length; $i++) {
                 if ($i < $bl) {
                     $buffer[$i] = $buffer[$i] ^ chr(mt_rand(0, 255));
                 } else {
@@ -117,10 +117,10 @@ abstract class Password
             $salt = self::generateSalt();
         } else {
             // Remove dollar signs from the salt, as we use that as a separator.
-            $salt = str_replace('$', '', $salt);
+            $salt = str_replace(array('+', '$'), array('.', ''), base64_encode($salt));
         }
 
-        $hash = scrypt($password, $salt, $N, $r, $p, self::$keyLength);
+        $hash = scrypt($password, $salt, $N, $r, $p, self::$_keyLength);
 
         return $N . '$' . $r . '$' . $p . '$' . $salt . '$' . $hash;
     }
@@ -136,7 +136,7 @@ abstract class Password
     public static function check($password, $hash)
     {
         // Is there actually a hash?
-        if (! strlen($hash)) {
+        if (!strlen($hash)) {
             return false;
         }
 
@@ -148,11 +148,11 @@ abstract class Password
         }
 
         // Are numeric values numeric?
-        if (! is_numeric($N) or ! is_numeric($r) or ! is_numeric($p)) {
+        if (!is_numeric($N) or !is_numeric($r) or !is_numeric($p)) {
             return false;
         }
 
-        $calculated = scrypt($password, $salt, $N, $r, $p, self::$keyLength);
+        $calculated = scrypt($password, $salt, $N, $r, $p, self::$_keyLength);
 
         // Use compareStrings to avoid timeing attacks
         return self::compareStrings($hash, $calculated);
