@@ -38,6 +38,29 @@ abstract class Password
     private static $_keyLength = 32;
 
     /**
+     * Get the byte-length of the given string
+     *
+     * @param string $str Input string
+     *
+     * @return int
+     */
+    protected static strlen( $str ) {
+        static $isShadowed = null;
+
+        if ($isShadowed === null) {
+            $isShadowed = extension_loaded('mbstring') &&
+                function_exists('mb_strlen') &&
+                ini_get('mbstring.func_overload') & 2;
+        }
+
+        if ($isShadowed) {
+            return mb_strlen($str, '8bit');
+        } else {
+            return strlen($str);
+        }
+    }
+
+    /**
      * Generates a random salt
      *
      * @param int $length The length of the salt
@@ -63,18 +86,18 @@ abstract class Password
         }
         if (!$buffer_valid && is_readable('/dev/urandom')) {
             $f = fopen('/dev/urandom', 'r');
-            $read = strlen($buffer);
+            $read = static::strlen($buffer);
             while ($read < $length) {
                 $buffer .= fread($f, $length - $read);
-                $read = strlen($buffer);
+                $read = static::strlen($buffer);
             }
             fclose($f);
             if ($read >= $length) {
                 $buffer_valid = true;
             }
         }
-        if (!$buffer_valid || strlen($buffer) < $length) {
-            $bl = strlen($buffer);
+        if (!$buffer_valid || static::strlen($buffer) < $length) {
+            $bl = static::strlen($buffer);
             for ($i = 0; $i < $length; $i++) {
                 if ($i < $bl) {
                     $buffer[$i] = $buffer[$i] ^ chr(mt_rand(0, 255));
@@ -136,7 +159,7 @@ abstract class Password
     public static function check($password, $hash)
     {
         // Is there actually a hash?
-        if (!strlen($hash)) {
+        if (!$hash) {
             return false;
         }
 
@@ -181,8 +204,8 @@ abstract class Password
     {
         $expected    = (string) $expected;
         $actual      = (string) $actual;
-        $lenExpected = strlen($expected);
-        $lenActual   = strlen($actual);
+        $lenExpected = static::strlen($expected);
+        $lenActual   = static::strlen($actual);
         $len         = min($lenExpected, $lenActual);
 
         $result = 0;
