@@ -44,12 +44,11 @@ abstract class Password
      *
      * @return int
      */
-    protected static strlen( $str ) {
+    protected static function strlen( $str ) {
         static $isShadowed = null;
 
         if ($isShadowed === null) {
             $isShadowed = extension_loaded('mbstring') &&
-                function_exists('mb_strlen') &&
                 ini_get('mbstring.func_overload') & 2;
         }
 
