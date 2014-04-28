@@ -3,7 +3,7 @@ Test scrypt KDF using test vectors.
 --SKIPIF--
 <?php if (!extension_loaded("scrypt")) print "skip"; ?>
 --INI--
-memory_limit=4G
+memory_limit=2G
 --FILE--
 <?php 
 echo scrypt("", "", 16, 1, 1, 64) . "\n";

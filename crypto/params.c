@@ -27,6 +27,11 @@
  * online backup system.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+
 #include "php.h"
 #ifdef PHP_WIN32
 #include "zend_config.w32.h"
@@ -35,8 +40,8 @@
 #include <errno.h>
 
 #include <stddef.h>
+
 #include "zend.h"
-#include "zend_alloc.h"
 #include "zend_alloc.h"
 #include <php_globals.h>
 #ifdef PHP_WIN32
@@ -134,10 +139,6 @@ pickparams(size_t maxmem, double maxmemfrac, double maxtime,
         *p = (uint32_t)(maxrp) / *r;
     }
 
-#ifdef DEBUG
-    fprintf(stderr, "N = %zu r = %d p = %d\n",
-        (size_t)(1) << *logN, (int)(*r), (int)(*p));
-#endif
 
     /* Success! */
     return (0);
@@ -347,11 +348,9 @@ memtouse(size_t maxmem, double maxmemfrac, size_t * memlimit)
 	/* But always allow at least 1 MiB. */
 	if (memavail < 1048576)
         {
-                php_error_docref(NULL TSRMLS_CC, E_WARNING, "%lu not enough memory available for using scrypt.", (unsigned long) memavail);
                 memavail = 1048576;
         }
 		
-                 /* php_error_docref(NULL TSRMLS_CC, E_NOTICE, "scrypt configured to use %lu out of %lu memory.", (unsigned long) memavail, (unsigned long) memlimit_mins  ); */
   
     /* Return limit via the provided pointer. */
     *memlimit = memavail;
