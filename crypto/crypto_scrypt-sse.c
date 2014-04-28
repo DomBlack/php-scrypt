@@ -303,42 +303,16 @@ crypto_scrypt(const uint8_t * passwd, size_t passwdlen,
     }
 
     /* Allocate memory. */
-#ifdef HAVE_POSIX_MEMALIGN
-    if ((errno = posix_memalign(&B0, 64, 128 * r * p)) != 0)
-        goto err0;
-    B = (uint8_t *)(B0);
-    if ((errno = posix_memalign(&XY0, 64, 256 * r + 64)) != 0)
-        goto err1;
-    XY = (uint32_t *)(XY0);
-#ifndef MAP_ANON
-    if ((errno = posix_memalign(&V0, 64, 128 * r * N)) != 0)
-        goto err2;
-    V = (uint32_t *)(V0);
-#endif
-#else
-    if ((B0 = malloc(128 * r * p + 63)) == NULL)
-        goto err0;
-    B = (uint8_t *)(((uintptr_t)(B0) + 63) & ~ (uintptr_t)(63));
-    if ((XY0 = malloc(256 * r + 64 + 63)) == NULL)
-        goto err1;
-    XY = (uint32_t *)(((uintptr_t)(XY0) + 63) & ~ (uintptr_t)(63));
-#ifndef MAP_ANON
-    if ((V0 = malloc(128 * r * N + 63)) == NULL)
-        goto err2;
-    V = (uint32_t *)(((uintptr_t)(V0) + 63) & ~ (uintptr_t)(63));
-#endif
-#endif
-#ifdef MAP_ANON
-    if ((V0 = mmap(NULL, 128 * r * N, PROT_READ | PROT_WRITE,
-#ifdef MAP_NOCORE
-        MAP_ANON | MAP_PRIVATE | MAP_NOCORE,
-#else
-        MAP_ANON | MAP_PRIVATE,
-#endif
-        -1, 0)) == MAP_FAILED)
-        goto err2;
-    V = (uint32_t *)(V0);
-#endif
+if ((B0 = emalloc(128 * r * p + 63)) == NULL)
+		goto err0;
+	B = (uint8_t *)(((uintptr_t)(B0) + 63) & ~ (uintptr_t)(63));
+	if ((XY0 = emalloc(256 * r + 64 + 63)) == NULL)
+		goto err1;
+	XY = (uint32_t *)(((uintptr_t)(XY0) + 63) & ~ (uintptr_t)(63));
+	if ((V0 = emalloc(128 * r * N + 63)) == NULL)
+		goto err2;
+	V = (uint32_t *)(((uintptr_t)(V0) + 63) & ~ (uintptr_t)(63));
+
 
     /* 1: (B_0 ... B_{p-1}) <-- PBKDF2(P, S, 1, p * MFLen) */
     PBKDF2_SHA256_SCRYPT(passwd, passwdlen, salt, saltlen, 1, B, p * 128 * r);
@@ -352,23 +326,19 @@ crypto_scrypt(const uint8_t * passwd, size_t passwdlen,
     /* 5: DK <-- PBKDF2(P, B, 1, dkLen) */
     PBKDF2_SHA256_SCRYPT(passwd, passwdlen, B, p * 128 * r, 1, buf, buflen);
 
-    /* Free memory. */
-#ifdef MAP_ANON
-    if (munmap(V0, 128 * r * N))
-        goto err2;
-#else
-    free(V0);
-#endif
-    free(XY0);
-    free(B0);
+    
+    	/* Free memory. */
+	efree(V0);
+	efree(XY0);
+	efree(B0);
 
-    /* Success! */
-    return (0);
+	/* Success! */
+	return (0);
 
 err2:
-    free(XY0);
+	efree(XY0);
 err1:
-    free(B0);
+	efree(B0);
 err0:
     /* Failure! */
     return (-1);

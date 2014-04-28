@@ -12,7 +12,7 @@ before_script:
   - ./configure --enable-scrypt
   - make all
 script: TEST_PHP_EXECUTABLE=$(which php) php -n
-    -d open_basedir= -d output_buffering=0 -d memory_limit=-1
+    -d open_basedir= -d output_buffering=0 -d memory_limit=512M
     run-tests.php -n
     -d extension_dir=modules -d extension=scrypt.so --show-diff
     tests
