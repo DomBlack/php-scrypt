@@ -37,18 +37,28 @@
 #include "zend_config.w32.h"
 #endif
 
+#include "php_globals.h"
+#include "php_variables.h"
+#include "php_getopt.h"
+#include "zend_builtin_functions.h"
+#include "zend_extensions.h"
+#include "zend_modules.h"
+#include "zend_globals.h"
+#include "zend_ini_scanner.h"
+#include "zend.h"
+#include "zend_alloc.h"
+#include "php_config.h"
+# include "TSRM.h"
+
+
 #include <errno.h>
 
 #include <stddef.h>
 
-#include "zend.h"
-#include "zend_alloc.h"
-#include <php_globals.h>
 #ifdef PHP_WIN32
 # include "win32/time.h"
 # include "win32/php_stdint.h"
 #else
-#include <php_config.h>
 # include <stdint.h>
 # include <unistd.h>
 #endif
@@ -60,9 +70,6 @@
 #endif
 #include <sys/types.h>
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
 #endif
@@ -334,7 +341,7 @@ memtouse(size_t maxmem, double maxmemfrac, size_t * memlimit)
     size_t memavail;
 
     /* Memory is constrained by PHP itself */
-    memlimit_min = PG(memory_limit) - zend_memory_usage(1);
+    memlimit_min = (PG(memory_limit) - (1 TSRMLS_CC))/1024;
     
     	/* Only use the specified fraction of the available memory. */
 	if ((maxmemfrac > 0.5) || (maxmemfrac == 0.0))
@@ -346,9 +353,9 @@ memtouse(size_t maxmem, double maxmemfrac, size_t * memlimit)
 		memavail = maxmem;
 
 	/* But always allow at least 1 MiB. */
-	if (memavail < 1048576)
+	if (memavail < 1048576/1024)
         {
-                memavail = 1048576;
+                memavail = 1048576/1024;
         }
 		
   
