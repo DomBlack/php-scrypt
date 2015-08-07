@@ -22,9 +22,14 @@ if test $PHP_SCRYPT != "no"; then
     AC_CHECK_MEMBER([struct sysinfo.totalram], [AC_DEFINE(HAVE_STRUCT_SYSINFO_TOTALRAM)])
 
     version=nosse
-    if test $(grep -ic "^flags.\+sse2" /proc/cpuinfo) -gt 0; then
-        version=sse
-        CFLAGS="$CFLAGS -msse -msse2"
+    if test "$(uname)" == 'Darwin'; then
+      sysctl -a | grep -iq "^machdep.cpu.features.\+sse2"
+    else
+      grep -iq "^flags.\+sse2" /proc/cpuinfo
+    fi
+    if test $? == 0; then
+      version=sse
+      CFLAGS="$CFLAGS -msse -msse2"
     fi
     AC_DEFINE(HAVE_SCRYPT, 1, [Whether you have scrypt])
     PHP_NEW_EXTENSION(scrypt, php_scrypt.c php_scrypt_utils.c crypto/sha256.c crypto/crypto_scrypt-$version.c crypto/params.c, $ext_shared)
