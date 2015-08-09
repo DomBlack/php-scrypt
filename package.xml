@@ -36,12 +36,13 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <dir name="/">
    <file name="config.m4" role="src" />
    <file name="config.w32" role="src" />
-   <file name="CREDITS" role="src" />
+   <file name="CREDITS" role="doc" />
+   <file name="LICENSE" role="doc" />
    <file name="php_scrypt.c" role="src" />
    <file name="php_scrypt.h" role="src" />
    <file name="php_scrypt_utils.c" role="src" />
    <file name="php_scrypt_utils.h" role="src" />
-   <file name="README.md" role="src" />
+   <file name="README.md" role="doc" />
    <file name="scrypt.php" role="doc" />
    <dir name="crypto">
     <file name="crypto_scrypt-nosse.c" role="src" />
