@@ -49,7 +49,7 @@
  * left intact
  */
 uint64_t
-clampAndCast64(const char *variableName, long value, int *error);
+clampAndCast64(const char *variableName, long value, int *error, long min);
 
 /*
  * Casts a long into a uint32_t.
@@ -59,6 +59,12 @@ clampAndCast64(const char *variableName, long value, int *error);
  * left intact
  */
 uint32_t
-clampAndCast32(const char *variableName, long value, int *error);
+clampAndCast32(const char *variableName, long value, int *error, long min);
+
+/*
+ * Checks if the givn number is a power of two
+ */
+uint64_t
+isPowerOfTwo (uint64_t N);
 
 #endif

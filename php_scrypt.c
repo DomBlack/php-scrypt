@@ -154,21 +154,27 @@ PHP_FUNCTION(scrypt)
 
     /* Clamp & cast them */
     castError = 0;
-    cryptN = clampAndCast64("N", phpN, &castError);
-    cryptR = clampAndCast32("r", phpR, &castError);
-    cryptP = clampAndCast32("p", phpP, &castError);
+    cryptN = clampAndCast64("N", phpN, &castError, 1);
+    cryptR = clampAndCast32("r", phpR, &castError, 0);
+    cryptP = clampAndCast32("p", phpP, &castError, 0);
 
     if (keyLength < 16) {
         keyLength = -1;
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Key length is too low, must be greater or equal to 16");
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Key length is too low, must be greater or equal to 16");
     } else if (keyLength > (powl(2, 32) - 1) * 32) {
         keyLength = -1;
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Key length is too high, must be no more than (2^32 - 1) * 32");
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Key length is too high, must be no more than (2^32 - 1) * 32");
     }
 
     /* Return out if we've encountered a error with the input parameters */
     if (castError > 0 || keyLength < 0) {
         RETURN_FALSE;
+    }
+
+    /* Checks on the parameters */
+    if (isPowerOfTwo(cryptN) != 0) {
+      php_error_docref(NULL TSRMLS_CC, E_ERROR, "N parameter must be a power of 2");
+      RETURN_FALSE;
     }
 
     /* Allocate the memory for the output of the key */

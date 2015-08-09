@@ -34,16 +34,16 @@
  * left intact
  */
 uint64_t
-clampAndCast64(const char *variableName, long value, int *error)
+clampAndCast64(const char *variableName, long value, int *error, long min)
 {
     TSRMLS_FETCH();
-    if (value <= 0)
+    if (value <= min)
     {
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "%s is too low.", variableName);
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "%s is too low.", variableName);
         *error = 1;
         return 0;
     } else if (value > UINT64_MAX) {
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "%s is too high.", variableName);
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "%s is too high.", variableName);
         *error = 1;
         return 0;
     }
@@ -59,19 +59,28 @@ clampAndCast64(const char *variableName, long value, int *error)
  * left intact
  */
 uint32_t
-clampAndCast32(const char *variableName, long value, int *error)
+clampAndCast32(const char *variableName, long value, int *error, long min)
 {
     TSRMLS_FETCH();
-    if (value <= 0)
+    if (value <= min)
     {
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "%s is too low.", variableName);
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "%s is too low.", variableName);
         *error = 1;
         return -1;
     } else if (value > UINT32_MAX) {
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "%s is too high.", variableName);
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "%s is too high.", variableName);
         *error = 1;
         return -1;
     }
 
     return (uint32_t)value;
+}
+
+/*
+ * Checks if the givn number is a power of two
+ */
+uint64_t
+isPowerOfTwo(uint64_t N)
+{
+  return N & (N - 1);
 }

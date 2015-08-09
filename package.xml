@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package 
- packagerversion="1.4.11" 
- version="2.0" 
- xmlns="http://pear.php.net/dtd/package-2.0" 
- xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" 
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<package
+ packagerversion="1.4.11"
+ version="2.0"
+ xmlns="http://pear.php.net/dtd/package-2.0"
+ xmlns:tasks="http://pear.php.net/dtd/tasks-1.0"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
 http://pear.php.net/dtd/tasks-1.0.xsd
 http://pear.php.net/dtd/package-2.0
@@ -19,17 +19,19 @@ http://pear.php.net/dtd/package-2.0.xsd">
    <email>thephenix@gmail.com</email>
    <active>yes</active>
  </lead>
- <date>2013-07-15</date>
+ <date>2015-08-09</date>
  <version>
-  <release>1.2</release>
-  <api>1.2</api>
+  <release>1.3</release>
+  <api>1.3</api>
  </version>
  <stability>
   <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</license>
- <notes>Initial release to PECL, plus various changes to the example PHP file</notes>
+ <notes>Fixed install pecl install on machines which do not support SSE extensions (#37).
+   Added a segfault catch for when an invalid N was passed in (#31).
+ </notes>
  <contents>
   <dir name="/">
    <file name="config.m4" role="src" />
@@ -73,6 +75,21 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <configureoption default="yes" name="enable-scrypt" prompt="whether to enable scrypt support" />
  </extsrcrelease>
  <changelog>
+   <release>
+     <version>
+       <release>1.2</release>
+       <api>1.2</api>
+     </version>
+     <stability>
+      <release>stable</release>
+      <api>stable</api>
+     </stability>
+     <date>2013-07-15</date>
+     <license uri="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</license>
+     <notes>
+       Initial release to PECL, plus various changes to the example PHP file
+     </notes>
+   </release>
   <release>
     <version>
       <release>1.1</release>
