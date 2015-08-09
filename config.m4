@@ -22,8 +22,13 @@ if test $PHP_SCRYPT != "no"; then
     AC_CHECK_MEMBER([struct sysinfo.totalram], [AC_DEFINE(HAVE_STRUCT_SYSINFO_TOTALRAM)])
 
     version=nosse
-    AC_CHECK_HEADER([emmintrin.h], [version=sse], [version=nosse])
-    if test "$version" = "sse"; then
+    if test "$(uname)" == 'Darwin'; then
+        sysctl -a | grep -iq "^machdep.cpu.features.\+sse2"
+    else
+        grep -iq "^flags.\+sse2" /proc/cpuinfo
+    fi
+    if test $? == 0; then
+        version=sse
         CFLAGS="$CFLAGS -msse -msse2"
     fi
     AC_DEFINE(HAVE_SCRYPT, 1, [Whether you have scrypt])
