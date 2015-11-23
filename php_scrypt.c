@@ -29,9 +29,12 @@
 #endif
 
 #include "php.h"
+#include "php_version.h"
+
 #ifdef PHP_WIN32
 #include "zend_config.w32.h"
 #endif
+
 #include "ext/hash/php_hash.h"
 #include "php_scrypt_utils.h"
 #include "php_scrypt.h"
@@ -199,10 +202,18 @@ PHP_FUNCTION(scrypt)
         php_hash_bin2hex(hex, buf, keyLength);
         efree(buf);
         hex[keyLength*2] = '\0';
-        RETURN_STRINGL(hex, keyLength * 2, 0);
+        #if PHP_MAJOR_VERSION >= 7
+            RETURN_STRINGL(hex, keyLength * 2);
+        #else
+            RETURN_STRINGL(hex, keyLength * 2, 0);
+        #endif
     } else {
         buf[keyLength] = '\0';
-        RETURN_STRINGL((char *)buf, keyLength, 0);
+        #if PHP_MAJOR_VERSION >= 7
+            RETURN_STRINGL((char *)buf, keyLength);
+        #else
+            RETURN_STRINGL((char *)buf, keyLength, 0);
+        #endif
     }
 }
 /* }}} */
