@@ -181,10 +181,10 @@ PHP_FUNCTION(scrypt)
         php_hash_bin2hex(hex, buf, keyLength);
         efree(buf);
         hex[keyLength*2] = '\0';
-        RETURN_STRINGL(hex, keyLength * 2, 0);
+        RETURN_STR(hex);
     } else {
         buf[keyLength] = '\0';
-        RETURN_STRINGL((char *)buf, keyLength, 0);
+        RETURN_STR((char *)buf);
     }
 }
 
