@@ -70,7 +70,14 @@ abstract class Password
     {
         $buffer = '';
         $buffer_valid = false;
-        if (function_exists('mcrypt_create_iv') && !defined('PHALANGER')) {
+        if (function_exists('random_bytes')) {
+            try {
+                $buffer = random_bytes($length);
+                $buffer_valid = true;
+            } catch (Exception $ex) {
+            }
+        }
+        if (!$buffer_valid && function_exists('mcrypt_create_iv') && !defined('PHALANGER')) {
             $buffer = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
             if ($buffer) {
                 $buffer_valid = true;
@@ -95,15 +102,8 @@ abstract class Password
                 $buffer_valid = true;
             }
         }
-        if (!$buffer_valid || static::strlen($buffer) < $length) {
-            $bl = static::strlen($buffer);
-            for ($i = 0; $i < $length; $i++) {
-                if ($i < $bl) {
-                    $buffer[$i] = $buffer[$i] ^ chr(mt_rand(0, 255));
-                } else {
-                    $buffer .= chr(mt_rand(0, 255));
-                }
-            }
+        if (!$buffer_valid) {
+            throw new Exception("No suitable random number generator available");
         }
         $salt = str_replace(array('+', '$'), array('.', ''), base64_encode($buffer));
 
