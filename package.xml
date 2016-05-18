@@ -21,19 +21,15 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </lead>
  <date>2016-05-18</date>
  <version>
-  <release>1.4</release>
-  <api>1.4</api>
+  <release>1.4.1</release>
+  <api>1.4.1</api>
  </version>
  <stability>
   <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</license>
- <notes>
-   Added PHP 7 support (#39, #40, #45)
-
-   Removed support for PHP 5.2 as Travis no longer supports testing it.
- </notes>
+ <notes>Fixed issue on RHEL 6 in x86_64 with PHP 7 (#46)</notes>
  <contents>
   <dir name="/">
    <file name="config.m4" role="src" />
@@ -78,6 +74,22 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <configureoption default="yes" name="enable-scrypt" prompt="whether to enable scrypt support" />
  </extsrcrelease>
  <changelog>
+   <release>
+     <version>
+       <release>1.4</release>
+       <api>1.4</api>
+     </version>
+     <stability>
+      <release>stable</release>
+      <api>stable</api>
+     </stability>
+     <date>2016-05-18</date>
+     <license uri="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</license>
+     <notes>
+       Added PHP 7 support (#39, #40, #45)
+       Removed support for PHP 5.2 as Travis no longer supports testing it.
+     </notes>
+   </release>
    <release>
      <version>
        <release>1.3</release>
