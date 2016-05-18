@@ -69,20 +69,26 @@ ZEND_END_ARG_INFO()
 static zend_function_entry scrypt_functions[] = {
     PHP_FE(scrypt, scrypt_arginfo)
     PHP_FE(scrypt_pickparams, scrypt_pickparams_arginfo)
+#ifdef PHP_FE_END
+    PHP_FE_END
+#else
     {NULL, NULL, NULL}
+#endif
 };
 
-#if ZEND_MODULE_API_NO >= 20050922
 static const zend_module_dep scrypt_deps[] = {
     ZEND_MOD_REQUIRED("hash")
+#ifdef ZEND_MOD_END
+    ZEND_MOD_END
+#else
     {NULL, NULL, NULL}
-};
 #endif
+};
 
 zend_module_entry scrypt_module_entry = {
-#if ZEND_MODULE_API_NO >= 20010901
-    STANDARD_MODULE_HEADER,
-#endif
+    STANDARD_MODULE_HEADER_EX,
+    NULL,
+    scrypt_deps,
     PHP_SCRYPT_EXTNAME,
     scrypt_functions,
     NULL,
@@ -90,9 +96,7 @@ zend_module_entry scrypt_module_entry = {
     NULL,
     NULL,
     NULL,
-#if ZEND_MODULE_API_NO >= 20010901
     PHP_SCRYPT_VERSION,
-#endif
     STANDARD_MODULE_PROPERTIES
 };
 
