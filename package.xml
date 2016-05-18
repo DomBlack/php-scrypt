@@ -21,15 +21,15 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </lead>
  <date>2016-05-18</date>
  <version>
-  <release>1.4.1</release>
-  <api>1.4.1</api>
+  <release>1.4.2</release>
+  <api>1.4.2</api>
  </version>
  <stability>
   <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</license>
- <notes>Fixed issue on RHEL 6 in x86_64 with PHP 7 (#46)</notes>
+ <notes>Fixed memory leak in PHP 7 (#48), weak CSPRNG on salts in the example file (#44)</notes>
  <contents>
   <dir name="/">
    <file name="config.m4" role="src" />
@@ -74,6 +74,21 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <configureoption default="yes" name="enable-scrypt" prompt="whether to enable scrypt support" />
  </extsrcrelease>
  <changelog>
+   <release>
+     <version>
+       <release>1.4.1</release>
+       <api>1.4.1</api>
+     </version>
+     <stability>
+      <release>stable</release>
+      <api>stable</api>
+     </stability>
+     <date>2016-05-18</date>
+     <license uri="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</license>
+     <notes>
+       Fixed issue on RHEL 6 in x86_64 with PHP 7 (#46)
+     </notes>
+   </release>
    <release>
      <version>
        <release>1.4</release>
