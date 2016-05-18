@@ -43,6 +43,12 @@
 
 #include "math.h"
 
+#if PHP_MAJOR_VERSION >= 7
+typedef size_t strsize_t;
+#else
+typedef int    strsize_t;
+#endif
+
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO_EX(scrypt_arginfo, 0, 0, 6)
     ZEND_ARG_INFO(0, password)
@@ -115,10 +121,10 @@ PHP_FUNCTION(scrypt)
 {
     /* Variables for PHP's parameters */
     unsigned char *password;
-    int password_len;
+    strsize_t password_len;
 
     unsigned char *salt;
-    int salt_len;
+    strsize_t salt_len;
 
     long phpN;
     long phpR;
