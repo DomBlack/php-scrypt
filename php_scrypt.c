@@ -210,6 +210,7 @@ PHP_FUNCTION(scrypt)
         hex[keyLength*2] = '\0';
         #if PHP_MAJOR_VERSION >= 7
             RETURN_STRINGL(hex, keyLength * 2);
+            efree(hex);
         #else
             RETURN_STRINGL(hex, keyLength * 2, 0);
         #endif
@@ -217,6 +218,7 @@ PHP_FUNCTION(scrypt)
         buf[keyLength] = '\0';
         #if PHP_MAJOR_VERSION >= 7
             RETURN_STRINGL((char *)buf, keyLength);
+            efree(buf);
         #else
             RETURN_STRINGL((char *)buf, keyLength, 0);
         #endif
