@@ -70,6 +70,20 @@ inside the VS2008 folder. This project assumes you have the PHP thread safe sour
     ; Enable scrypt extension module
     extension=scrypt.dll
 ````
+Code demo
+=================
+```php
+<?php
+        $passwd = "123456";
+        $salt = "1d39076d7f7ec3eacc8847ec3a87ce4f3a9fb651a92f5df40cb6ac5252b29972";
+        $N = 262144;
+        $r = 8;
+        $p = 1;
+        $dkLen = 32;
+        $out = scrypt($passwd, hex2bin($salt), $N, $r, $p, $dkLen);
+        echo $out;
+?>
+```
 
 Legal Stuff
 ===========
