@@ -25,6 +25,7 @@
  */
 
 #include "php_scrypt_utils.h"
+#include "php_scrypt.h"
 
 /*
  * Casts a long into a uint64_t.
