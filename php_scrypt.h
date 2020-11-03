@@ -35,4 +35,9 @@ PHP_FUNCTION(scrypt_pickparams);
 extern zend_module_entry scrypt_module_entry;
 #define phpext_scrypt_ptr &scrypt_module_entry
 
+#ifndef TSRMLS_CC
+#define TSRMLS_CC
+#define TSRMLS_FETCH()
+#endif
+
 #endif
