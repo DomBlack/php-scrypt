@@ -48,7 +48,7 @@
 
 static void blkcpy(void *, void *, size_t);
 static void blkxor(void *, void *, size_t);
-static void salsa20_8(__m128i *);
+static void salsa20_8(__m128i [4]);
 static void blockmix_salsa8(__m128i *, __m128i *, __m128i *, size_t);
 static uint64_t integerify(void *, size_t);
 static void smix(uint8_t *, size_t, uint64_t, void *, void *);
