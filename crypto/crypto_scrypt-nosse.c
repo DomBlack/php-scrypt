@@ -45,6 +45,7 @@
 #include "sysendian.h"
 
 #include "crypto_scrypt.h"
+#include "php_scrypt.h"
 
 static void blkcpy(uint8_t *, uint8_t *, size_t);
 static void blkxor(uint8_t *, uint8_t *, size_t);
