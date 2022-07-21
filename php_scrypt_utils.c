@@ -26,26 +26,31 @@
 
 #include "php_scrypt_utils.h"
 #include "php_scrypt.h"
+#include "zend_exceptions.h"
 
 /*
  * Casts a long into a uint64_t.
  *
- * Throws a php error if the value is out of bounds
- * and will return 0. The error varaible will be set to 1, otherwise
- * left intact
+ * Throws a php error if the value is out of bounds and will return 0.
  */
 uint64_t
-clampAndCast64(const char *variableName, long value, int *error, long min)
+clampAndCast64(uint32_t argNum, const char *argName, long value, long min)
 {
     TSRMLS_FETCH();
     if (value <= min)
     {
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "%s is too low.", variableName);
-        *error = 1;
+#if PHP_VERSION_ID >= 80000
+		zend_argument_error(NULL, argNum, "must be greater than %ld", min);
+#else
+		zend_throw_error(zend_ce_error, "scrypt(): Argument #%d ($%s) must be greater than %ld", argNum, argName, min);
+#endif
         return 0;
     } else if (value > UINT64_MAX) {
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "%s is too high.", variableName);
-        *error = 1;
+#if PHP_VERSION_ID >= 80000
+		zend_argument_error(NULL, argNum, "is too large");
+#else
+        zend_throw_error(zend_ce_error, "scrypt(): Argument #%d ($%s) is too large", argNum, argName);
+#endif
         return 0;
     }
 
@@ -55,23 +60,27 @@ clampAndCast64(const char *variableName, long value, int *error, long min)
 /*
  * Casts a long into a uint32_t.
  *
- * Throws a php error if the value is out of bounds
- * and will return 0. The error varaible will be set to 1, otherwise
- * left intact
+ * Throws an exception if the value is out of bounds and will return -1.
  */
 uint32_t
-clampAndCast32(const char *variableName, long value, int *error, long min)
+clampAndCast32(uint32_t argNum, const char *argName, long value, long min)
 {
     TSRMLS_FETCH();
     if (value <= min)
     {
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "%s is too low.", variableName);
-        *error = 1;
-        return -1;
+#if PHP_VERSION_ID >= 80000
+		zend_argument_error(NULL, argNum, "must be greater than %ld", min);
+#else
+		zend_throw_error(zend_ce_error, "scrypt(): Argument #%d ($%s) must be greater than %ld", argNum, argName, min);
+#endif
+		return -1;
     } else if (value > UINT32_MAX) {
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "%s is too high.", variableName);
-        *error = 1;
-        return -1;
+#if PHP_VERSION_ID >= 80000
+		zend_argument_error(NULL, argNum, "is too large");
+#else
+        zend_throw_error(zend_ce_error, "scrypt(): Argument #%d ($%s) is too large", argNum, argName);
+#endif
+		return -1;
     }
 
     return (uint32_t)value;

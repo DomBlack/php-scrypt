@@ -30,6 +30,7 @@
 
 #include "php.h"
 #include "php_version.h"
+#include "zend_exceptions.h"
 
 #ifdef PHP_WIN32
 #include "zend_config.w32.h"
@@ -46,6 +47,10 @@
 #include "php_scrypt_legacy_arginfo.h"
 #endif
 #include "math.h"
+
+#if PHP_VERSION_ID < 80000
+#define RETURN_THROWS() do { ZEND_ASSERT(EG(exception)); (void) return_value; return; } while (0)
+#endif
 
 typedef size_t strsize_t;
 
@@ -120,43 +125,57 @@ PHP_FUNCTION(scrypt)
     int result;
 
     /* Get the parameters for this call */
-    phpN = -1;
-    phpR = -1;
-    phpP = -1;
-    keyLength = 64;
     raw_output = 0;
-    if (zend_parse_parameters(
+    if (zend_parse_parameters_throw(
             ZEND_NUM_ARGS() TSRMLS_CC, "ssllll|b",
             &password, &password_len, &salt, &salt_len,
             &phpN, &phpR, &phpP, &keyLength, &raw_output
         ) == FAILURE)
     {
-        return;
-    }
-
-    /* Clamp & cast them */
-    castError = 0;
-    cryptN = clampAndCast64("N", phpN, &castError, 1);
-    cryptR = clampAndCast32("r", phpR, &castError, 0);
-    cryptP = clampAndCast32("p", phpP, &castError, 0);
-
-    if (keyLength < 16) {
-        keyLength = -1;
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Key length is too low, must be greater or equal to 16");
-    } else if (keyLength > (powl(2, 32) - 1) * 32) {
-        keyLength = -1;
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Key length is too high, must be no more than (2^32 - 1) * 32");
-    }
-
-    /* Return out if we've encountered a error with the input parameters */
-    if (castError > 0 || keyLength < 0) {
-        RETURN_FALSE;
+        RETURN_THROWS();
     }
 
     /* Checks on the parameters */
+
+    castError = 0;
+    cryptN = clampAndCast64(3, "N", phpN, 1);
+	if (EG(exception)) {
+        RETURN_THROWS();
+    }
+    cryptR = clampAndCast32(4, "r", phpR, 0);
+	if (EG(exception)) {
+        RETURN_THROWS();
+    }
+    cryptP = clampAndCast32(5, "p", phpP, 0);
+	if (EG(exception)) {
+		RETURN_THROWS();
+	}
+
     if (isPowerOfTwo(cryptN) != 0) {
-      php_error_docref(NULL TSRMLS_CC, E_ERROR, "N parameter must be a power of 2");
-      RETURN_FALSE;
+#if PHP_VERSION_ID >= 80000
+        zend_argument_error(NULL, 3, "must be a power of 2");
+#else
+		zend_throw_error(zend_ce_error, "scrypt(): Argument #3 ($N) must be a power of 2");
+#endif
+        RETURN_THROWS();
+    }
+
+    if (keyLength < 16) {
+#if PHP_VERSION_ID >= 80000
+        zend_argument_error(NULL, 6, "must be greater than or equal to 16");
+#else
+		zend_throw_error(zend_ce_error, "scrypt(): Argument #6 ($key_length) must be greater than or equal to 16");
+#endif
+        RETURN_THROWS();
+    }
+
+    if (keyLength > (powl(2, 32) - 1) * 32) {
+#if PHP_VERSION_ID >= 80000
+        zend_argument_error(NULL, 6, "must be less than or equal to (2^32 - 1) * 32");
+#else
+		zend_throw_error(zend_ce_error, "scrypt(): Argument #6 ($key_length) must be less than or equal to (2^32 - 1) * 32");
+#endif
+        RETURN_THROWS();
     }
 
     /* Allocate the memory for the output of the key */
@@ -175,7 +194,7 @@ PHP_FUNCTION(scrypt)
         RETURN_FALSE;
     }
 
-    if(!raw_output) {
+    if (!raw_output) {
         /* Encode the output in hex */
         hex = (char*) safe_emalloc(2, keyLength, 1);
         php_hash_bin2hex(hex, buf, keyLength);
@@ -213,21 +232,44 @@ PHP_FUNCTION(scrypt_pickparams)
     int rc;
 
     /* Get the parameters for this call */
-    if (zend_parse_parameters(
+    if (zend_parse_parameters_throw(
             ZEND_NUM_ARGS() TSRMLS_CC, "ldd",
             &maxmem, &memfrac, &maxtime
         ) == FAILURE)
     {
-        return;
+        RETURN_THROWS();
     }
 
-    if(maxmem < 0 || memfrac < 0 || maxtime < 0) {
-        RETURN_FALSE;
+    if (maxmem < 0) {
+#if PHP_VERSION_ID >= 80000
+		zend_argument_error(NULL, 1, "must be greater than or equal to 0");
+#else
+		zend_throw_error(zend_ce_error, "scrypt_pickparams(): Argument #1 ($max_memory) must be greater than or equal to 0");
+#endif
+		RETURN_THROWS();
+    }
+
+    if (memfrac < 0) {
+#if PHP_VERSION_ID >= 80000
+		zend_argument_error(NULL, 2, "must be greater than or equal to 0");
+#else
+		zend_throw_error(zend_ce_error, "scrypt_pickparams(): Argument #2 ($memory_fraction) must be greater than or equal to 0");
+#endif
+        RETURN_THROWS();
+    }
+
+    if (maxtime < 0) {
+#if PHP_VERSION_ID >= 80000
+		zend_argument_error(NULL, 3, "must be greater than or equal to 0");
+#else
+		zend_throw_error(zend_ce_error, "scrypt_pickparams(): Argument #3 ($max_time) must be greater than or equal to 0");
+#endif
+        RETURN_THROWS();
     }
 
     rc = pickparams((size_t) maxmem, memfrac, maxtime, &cryptN, &cryptR, &cryptP);
 
-    if(rc != 0) {
+    if (rc != 0) {
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "Could not determine scrypt parameters.");
         RETURN_FALSE;
     }
