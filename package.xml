@@ -19,6 +19,12 @@ http://pear.php.net/dtd/package-2.0.xsd">
    <email>thephenix@gmail.com</email>
    <active>yes</active>
  </lead>
+ <lead>
+   <name>Máté Kocsis</name>
+   <user>kocsismate</user>
+   <email>kocsismate@woohoolabs.com</email>
+   <active>yes</active>
+ </lead>
  <date>2016-05-18</date>
  <version>
   <release>1.4.2</release>
