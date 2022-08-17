@@ -35,7 +35,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <api>stable</api>
  </stability>
  <license uri="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</license>
- <notes>Fixed memory leak in PHP 7 (#48), weak CSPRNG on salts in the example file (#44)</notes>
+ <notes>Added PHP 8 support (#56, #59), Fixed compilation warning (#65)</notes>
  <contents>
   <dir name="/">
    <file name="config.m4" role="src" />
