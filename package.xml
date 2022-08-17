@@ -89,7 +89,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
       <release>stable</release>
       <api>stable</api>
      </stability>
-     <date>2022-10-17</date>
+     <date>2022-08-17</date>
      <license uri="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</license>
      <notes>
        Added PHP 8 support (#56, #59)
