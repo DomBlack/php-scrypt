@@ -25,10 +25,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
    <email>kocsismate@woohoolabs.com</email>
    <active>yes</active>
  </lead>
- <date>2016-05-18</date>
+ <date>2022-08-17</date>
  <version>
-  <release>1.4.2</release>
-  <api>1.4.2</api>
+  <release>1.4.3</release>
+  <api>1.4.3</api>
  </version>
  <stability>
   <release>stable</release>
@@ -80,6 +80,38 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <configureoption default="yes" name="enable-scrypt" prompt="whether to enable scrypt support" />
  </extsrcrelease>
  <changelog>
+   <release>
+     <version>
+       <release>1.4.3</release>
+       <api>1.4.3</api>
+     </version>
+     <stability>
+      <release>stable</release>
+      <api>stable</api>
+     </stability>
+     <date>2022-10-17</date>
+     <license uri="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</license>
+     <notes>
+       Added PHP 8 support (#56, #59)
+       Fixed compilation warning (#65)
+     </notes>
+   </release>
+   <release>
+     <version>
+       <release>1.4.2</release>
+       <api>1.4.2</api>
+     </version>
+     <stability>
+      <release>stable</release>
+      <api>stable</api>
+     </stability>
+     <date>2016-05-18</date>
+     <license uri="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</license>
+     <notes>
+       Fixed memory leak in PHP 7 (#48)
+       Weak CSPRNG on salts in the example file (#44)
+     </notes>
+   </release>
    <release>
      <version>
        <release>1.4.1</release>
