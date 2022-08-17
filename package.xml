@@ -44,6 +44,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
    <file name="LICENSE" role="doc" />
    <file name="php_scrypt.c" role="src" />
    <file name="php_scrypt.h" role="src" />
+   <file name="php_scrypt_arginfo.h" role="src" />
+   <file name="php_scrypt_legacy_arginfo.h" role="src" />
+   <file name="php_scrypt.stub.php" role="src" />
    <file name="php_scrypt_utils.c" role="src" />
    <file name="php_scrypt_utils.h" role="src" />
    <file name="README.md" role="doc" />

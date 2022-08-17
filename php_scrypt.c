@@ -40,45 +40,18 @@
 #include "php_scrypt.h"
 #include "crypto/crypto_scrypt.h"
 #include "crypto/params.h"
-
+#if PHP_MAJOR_VERSION >= 8
+#include "php_scrypt_arginfo.h"
+#else
+#include "php_scrypt_legacy_arginfo.h"
+#endif
 #include "math.h"
 
 typedef size_t strsize_t;
 
-/* {{{ arginfo */
-ZEND_BEGIN_ARG_INFO_EX(scrypt_arginfo, 0, 0, 6)
-    ZEND_ARG_INFO(0, password)
-    ZEND_ARG_INFO(0, salt)
-    ZEND_ARG_INFO(0, N)
-    ZEND_ARG_INFO(0, r)
-    ZEND_ARG_INFO(0, p)
-    ZEND_ARG_INFO(0, keyLength)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO_EX(scrypt_pickparams_arginfo, 0, 0, 3)
-    ZEND_ARG_INFO(0, maxMemory)
-    ZEND_ARG_INFO(0, memFraction)
-    ZEND_ARG_INFO(0, maxTime)
-ZEND_END_ARG_INFO()
-/* }}} */
-
-static zend_function_entry scrypt_functions[] = {
-    PHP_FE(scrypt, scrypt_arginfo)
-    PHP_FE(scrypt_pickparams, scrypt_pickparams_arginfo)
-#ifdef PHP_FE_END
-    PHP_FE_END
-#else
-    {NULL, NULL, NULL}
-#endif
-};
-
 static const zend_module_dep scrypt_deps[] = {
     ZEND_MOD_REQUIRED("hash")
-#ifdef ZEND_MOD_END
     ZEND_MOD_END
-#else
-    {NULL, NULL, NULL}
-#endif
 };
 
 zend_module_entry scrypt_module_entry = {
@@ -86,7 +59,7 @@ zend_module_entry scrypt_module_entry = {
     NULL,
     scrypt_deps,
     PHP_SCRYPT_EXTNAME,
-    scrypt_functions,
+    ext_functions,
     NULL,
     NULL,
     NULL,
