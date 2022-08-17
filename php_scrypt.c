@@ -43,11 +43,7 @@
 
 #include "math.h"
 
-#if PHP_MAJOR_VERSION >= 7
 typedef size_t strsize_t;
-#else
-typedef int    strsize_t;
-#endif
 
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO_EX(scrypt_arginfo, 0, 0, 6)
@@ -212,20 +208,12 @@ PHP_FUNCTION(scrypt)
         php_hash_bin2hex(hex, buf, keyLength);
         efree(buf);
         hex[keyLength*2] = '\0';
-        #if PHP_MAJOR_VERSION >= 7
-            RETURN_STRINGL(hex, keyLength * 2);
-            efree(hex);
-        #else
-            RETURN_STRINGL(hex, keyLength * 2, 0);
-        #endif
+		RETURN_STRINGL(hex, keyLength * 2);
+		efree(hex);
     } else {
         buf[keyLength] = '\0';
-        #if PHP_MAJOR_VERSION >= 7
-            RETURN_STRINGL((char *)buf, keyLength);
-            efree(buf);
-        #else
-            RETURN_STRINGL((char *)buf, keyLength, 0);
-        #endif
+		RETURN_STRINGL((char *)buf, keyLength);
+		efree(buf);
     }
 }
 /* }}} */
