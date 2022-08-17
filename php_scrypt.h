@@ -29,9 +29,6 @@
 #define PHP_SCRYPT_VERSION "2.0.0-dev"
 #define PHP_SCRYPT_EXTNAME "scrypt"
 
-PHP_FUNCTION(scrypt);
-PHP_FUNCTION(scrypt_pickparams);
-
 extern zend_module_entry scrypt_module_entry;
 #define phpext_scrypt_ptr &scrypt_module_entry
 
