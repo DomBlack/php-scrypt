@@ -6,39 +6,39 @@ Test scrypt() error conditions
 <?php
 
 try {
-	scrypt("", "", 1, 1, 1, 64);
+    scrypt("", "", 1, 1, 1, 64);
 } catch (Error $e) {
-	echo $e->getMessage() . "\n";
+    echo $e->getMessage() . "\n";
 }
 
 try {
-	scrypt("", "", 15, 1, 1, 64);
+    scrypt("", "", 15, 1, 1, 64);
 } catch (Error $e) {
-	echo $e->getMessage() . "\n";
+    echo $e->getMessage() . "\n";
 }
 
 try {
-	scrypt("", "", 16, 0, 1, 64);
+    scrypt("", "", 16, 0, 1, 64);
 } catch (Error $e) {
-	echo $e->getMessage() . "\n";
+    echo $e->getMessage() . "\n";
 }
 
 try {
-	scrypt("", "", 16, 1, 0, 16);
+    scrypt("", "", 16, 1, 0, 16);
 } catch (Error $e) {
-	echo $e->getMessage() . "\n";
+    echo $e->getMessage() . "\n";
 }
 
 try {
-	scrypt("", "", 16, 1, 1, 15);
+    scrypt("", "", 16, 1, 1, 15);
 } catch (Error $e) {
-	echo $e->getMessage() . "\n";
+    echo $e->getMessage() . "\n";
 }
 
 try {
-	scrypt("", "", 16, 1, 1, PHP_INT_MAX);
+    scrypt("", "", 16, 1, 1, PHP_INT_MAX);
 } catch (Error $e) {
-	echo $e->getMessage() . "\n";
+    echo $e->getMessage() . "\n";
 }
 
 ?>
