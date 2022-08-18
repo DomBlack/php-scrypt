@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: ea5f25cdf40271f96836b23cdda89954e4c2a479 */
+ * Stub hash: 8b564912a6ddca2a4134bbff80f81e82ba20805e */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_scrypt, 0, 6, MAY_BE_STRING|MAY_BE_FALSE)
 	ZEND_ARG_TYPE_INFO(0, password, IS_STRING, 0)
@@ -27,3 +27,13 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE(scrypt_pickparams, arginfo_scrypt_pickparams)
 	ZEND_FE_END
 };
+
+static void register_php_scrypt_symbols(int module_number)
+{
+
+#if (PHP_VERSION_ID >= 80200)
+	zend_add_parameter_attribute(zend_hash_str_find_ptr(CG(function_table), "scrypt", sizeof("scrypt") - 1), 0, ZSTR_KNOWN(ZEND_STR_SENSITIVEPARAMETER), 0);
+
+	zend_add_parameter_attribute(zend_hash_str_find_ptr(CG(function_table), "scrypt", sizeof("scrypt") - 1), 1, ZSTR_KNOWN(ZEND_STR_SENSITIVEPARAMETER), 0);
+#endif
+}
