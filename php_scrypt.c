@@ -199,11 +199,11 @@ PHP_FUNCTION(scrypt)
 		php_hash_bin2hex(hex, buf, keyLength);
 		efree(buf);
 		hex[keyLength*2] = '\0';
-		RETURN_STRINGL(hex, keyLength * 2);
+		RETVAL_STRINGL(hex, keyLength * 2);
 		efree(hex);
 	} else {
 		buf[keyLength] = '\0';
-		RETURN_STRINGL((char *)buf, keyLength);
+		RETVAL_STRINGL((char *)buf, keyLength);
 		efree(buf);
 	}
 }
@@ -280,5 +280,4 @@ PHP_FUNCTION(scrypt_pickparams)
 	add_assoc_long(return_value, "n", phpN);
 	add_assoc_long(return_value, "r", phpR);
 	add_assoc_long(return_value, "p", phpP);
-	return;
 }
