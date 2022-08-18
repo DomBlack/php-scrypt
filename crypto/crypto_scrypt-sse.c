@@ -273,24 +273,22 @@ crypto_scrypt(const uint8_t * passwd, size_t passwdlen,
     uint32_t * XY;
     uint32_t i;
 
-    TSRMLS_FETCH();
-
     /* Sanity-check parameters. */
 #if SIZE_MAX > UINT32_MAX
     if (buflen > (((uint64_t)(1) << 32) - 1) * 32) {
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid Parameters: $keyLength too big");
+        php_error_docref(NULL, E_WARNING, "Invalid Parameters: $keyLength too big");
         errno = EFBIG;
         goto err0;
     }
 #endif
     if ((uint64_t)(r) * (uint64_t)(p) >= (1 << 30)) {
         errno = EFBIG;
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid Parameters; $r * $p is >= 2^30");
+        php_error_docref(NULL, E_WARNING, "Invalid Parameters; $r * $p is >= 2^30");
         goto err0;
     }
     if (((N & (N - 1)) != 0) || (N == 0)) {
         errno = EINVAL;
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid Parameters; $N is not a power of two greater than 1");
+        php_error_docref(NULL, E_WARNING, "Invalid Parameters; $N is not a power of two greater than 1");
         goto err0;
     }
     if ((r > SIZE_MAX / 128 / p) ||
@@ -298,7 +296,7 @@ crypto_scrypt(const uint8_t * passwd, size_t passwdlen,
         (r > (SIZE_MAX - 64) / 256) ||
 #endif
         (N > SIZE_MAX / 128 / r)) {
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid Parameters");
+        php_error_docref(NULL, E_WARNING, "Invalid Parameters");
         errno = ENOMEM;
         goto err0;
     }

@@ -125,7 +125,7 @@ PHP_FUNCTION(scrypt)
 	/* Get the parameters for this call */
 	raw_output = 0;
 	if (zend_parse_parameters_throw(
-			ZEND_NUM_ARGS() TSRMLS_CC, "ssllll|b",
+			ZEND_NUM_ARGS(), "ssllll|b",
 			&password, &password_len, &salt, &salt_len,
 			&phpN, &phpR, &phpP, &keyLength, &raw_output
 		) == FAILURE)
@@ -229,7 +229,7 @@ PHP_FUNCTION(scrypt_pickparams)
 
 	/* Get the parameters for this call */
 	if (zend_parse_parameters_throw(
-			ZEND_NUM_ARGS() TSRMLS_CC, "ldd",
+			ZEND_NUM_ARGS(), "ldd",
 			&maxmem, &memfrac, &maxtime
 		) == FAILURE)
 	{
@@ -266,7 +266,7 @@ PHP_FUNCTION(scrypt_pickparams)
 	rc = pickparams((size_t) maxmem, memfrac, maxtime, &cryptN, &cryptR, &cryptP);
 
 	if (rc != 0) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Could not determine scrypt parameters.");
+		php_error_docref(NULL, E_WARNING, "Could not determine scrypt parameters.");
 		RETURN_FALSE;
 	}
 
