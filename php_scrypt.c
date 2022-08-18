@@ -42,6 +42,7 @@
 #include "crypto/crypto_scrypt.h"
 #include "crypto/params.h"
 #if PHP_MAJOR_VERSION >= 8
+#include "zend_attributes.h"
 #include "php_scrypt_arginfo.h"
 #else
 #include "php_scrypt_legacy_arginfo.h"
@@ -59,13 +60,22 @@ static const zend_module_dep scrypt_deps[] = {
 	ZEND_MOD_END
 };
 
+static PHP_MINIT_FUNCTION(scrypt)
+{
+#if PHP_VERSION_ID >= 80200
+	register_php_scrypt_symbols(module_number);
+#endif
+
+	return SUCCESS;
+}
+
 zend_module_entry scrypt_module_entry = {
 	STANDARD_MODULE_HEADER_EX,
 	NULL,
 	scrypt_deps,
 	PHP_SCRYPT_EXTNAME,
 	ext_functions,
-	NULL,
+	PHP_MINIT(scrypt),
 	NULL,
 	NULL,
 	NULL,
