@@ -5,7 +5,7 @@ Test scrypt KDF using test vectors.
 --INI--
 memory_limit=2G
 --FILE--
-<?php 
+<?php
 echo scrypt("", "", 16, 1, 1, 64) . "\n";
 echo scrypt("password", "NaCl", 1024, 8, 16, 64) . "\n";
 echo scrypt("pleaseletmein", "SodiumChloride", 16384, 8, 1, 64) . "\n";
