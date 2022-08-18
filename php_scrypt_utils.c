@@ -35,7 +35,6 @@
  */
 uint64_t clampAndCast64(uint32_t argNum, const char *argName, long value, long min)
 {
-	TSRMLS_FETCH();
 	if (value <= min)
 	{
 #if PHP_VERSION_ID >= 80000
@@ -63,7 +62,6 @@ uint64_t clampAndCast64(uint32_t argNum, const char *argName, long value, long m
  */
 uint32_t clampAndCast32(uint32_t argNum, const char *argName, long value, long min)
 {
-	TSRMLS_FETCH();
 	if (value <= min)
 	{
 #if PHP_VERSION_ID >= 80000

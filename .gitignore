@@ -8,6 +8,7 @@ scrypt-*.tgz
 #
 
 .deps
+*.dep
 *.lo
 *.la
 .libs
@@ -23,6 +24,7 @@ libtool
 configure*
 install-sh
 ltmain.sh
+ltmain.sh.backup
 Makefile*
 missing
 mkinstalldirs
