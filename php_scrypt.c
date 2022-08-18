@@ -115,7 +115,6 @@ PHP_FUNCTION(scrypt)
 	uint64_t cryptN;
 	uint32_t cryptR;
 	uint32_t cryptP;
-	int castError;
 
 	/* Output variables */
 	char *hex;
@@ -136,7 +135,6 @@ PHP_FUNCTION(scrypt)
 
 	/* Checks on the parameters */
 
-	castError = 0;
 	cryptN = clampAndCast64(3, "N", phpN, 1);
 	if (EG(exception)) {
 		RETURN_THROWS();
