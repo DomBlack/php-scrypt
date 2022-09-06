@@ -25,17 +25,19 @@ http://pear.php.net/dtd/package-2.0.xsd">
    <email>kocsismate@woohoolabs.com</email>
    <active>yes</active>
  </lead>
- <date>2022-08-17</date>
+ <date>2022-09-06</date>
  <version>
-  <release>2.0.0dev</release>
-  <api>2.0.0dev</api>
+  <release>2.0.0</release>
+  <api>2.0.0</api>
  </version>
  <stability>
   <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</license>
- <notes></notes>
+ <notes>Increased PHP version requirement to 7.0 (#67, #69), Improved parameter reflection and validation (#63, #64),
+   Fixed memory leak in scrypt() (#68), Fixed compilation warning (#69), Added support for sensitive parameters on PHP 8.2+ (#70)
+ </notes>
  <contents>
   <dir name="/">
    <file name="config.m4" role="src" />
@@ -63,9 +65,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <file name="sysendian.h" role="src" />
    </dir>
    <dir name="tests">
-    <file role="test" name="params.phpt" />
+    <file role="test" name="scrypt_error_stacktrace.phpt" />
     <file role="test" name="scrypt_errors.phpt" />
     <file role="test" name="scrypt_pickparams_errors.phpt" />
+    <file role="test" name="scrypt_pickparams_success.phpt" />
     <file role="test" name="scrypt_vectors.phpt" />
    </dir>
   </dir>
@@ -85,6 +88,25 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <configureoption default="yes" name="enable-scrypt" prompt="whether to enable scrypt support" />
  </extsrcrelease>
  <changelog>
+   <release>
+     <version>
+       <release>2.0.0</release>
+       <api>2.0.0</api>
+     </version>
+     <stability>
+       <release>stable</release>
+       <api>stable</api>
+     </stability>
+     <date>2022-09-06</date>
+     <license uri="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</license>
+     <notes>
+       Increased PHP version requirement to 7.0 (#67, #69)
+       Improved parameter reflection and validation (#63, #64)
+       Fixed memory leak in scrypt() (#68)
+       Fixed compilation warning (#69)
+       Added support for sensitive parameters on PHP 8.2+ (#70)
+     </notes>
+   </release>
    <release>
      <version>
        <release>1.4.3</release>
