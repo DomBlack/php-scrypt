@@ -26,7 +26,7 @@
 
 #ifndef PHP_SCRYPT_HEADER
 #define PHP_SCRYPT_HEADER 1
-#define PHP_SCRYPT_VERSION "2.0.0"
+#define PHP_SCRYPT_VERSION "2.0.1"
 #define PHP_SCRYPT_EXTNAME "scrypt"
 
 extern zend_module_entry scrypt_module_entry;

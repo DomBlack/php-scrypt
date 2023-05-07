@@ -25,9 +25,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
    <email>kocsismate@woohoolabs.com</email>
    <active>yes</active>
  </lead>
- <date>2022-09-06</date>
+ <date>2023-05-07</date>
  <version>
-  <release>2.0.0</release>
+  <release>2.0.1</release>
   <api>2.0.0</api>
  </version>
  <stability>
@@ -35,8 +35,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <api>stable</api>
  </stability>
  <license uri="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</license>
- <notes>Increased PHP version requirement to 7.0 (#67, #69), Improved parameter reflection and validation (#63, #64),
-   Fixed memory leak in scrypt() (#68), Fixed compilation warning (#69), Added support for sensitive parameters on PHP 8.2+ (#70)
+ <notes>
+   Check CPU architecture before attempting to enable SSE (#76)
  </notes>
  <contents>
   <dir name="/">
@@ -88,6 +88,21 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <configureoption default="yes" name="enable-scrypt" prompt="whether to enable scrypt support" />
  </extsrcrelease>
  <changelog>
+   <release>
+     <version>
+       <release>2.0.1</release>
+       <api>2.0.0</api>
+     </version>
+     <stability>
+       <release>stable</release>
+       <api>stable</api>
+     </stability>
+     <date>2023-05-07</date>
+     <license uri="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</license>
+     <notes>
+       Check CPU architecture before attempting to enable SSE (#76)
+     </notes>
+   </release>
    <release>
      <version>
        <release>2.0.0</release>
