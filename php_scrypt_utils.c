@@ -33,7 +33,7 @@
  *
  * Throws a php error if the value is out of bounds and will return 0.
  */
-uint64_t clampAndCast64(uint32_t argNum, const char *argName, long value, long min)
+uint64_t clampAndCast64(uint32_t argNum, const char *argName, zend_long value, zend_long min)
 {
 	if (value <= min)
 	{
@@ -60,7 +60,7 @@ uint64_t clampAndCast64(uint32_t argNum, const char *argName, long value, long m
  *
  * Throws an exception if the value is out of bounds and will return -1.
  */
-uint32_t clampAndCast32(uint32_t argNum, const char *argName, long value, long min)
+uint32_t clampAndCast32(uint32_t argNum, const char *argName, zend_long value, zend_long min)
 {
 	if (value <= min)
 	{

@@ -36,7 +36,10 @@
 #include "zend_config.w32.h"
 #endif
 
+#if PHP_VERSION_ID < 80600
 #include "ext/hash/php_hash.h"
+#endif
+
 #include "php_scrypt_utils.h"
 #include "php_scrypt.h"
 #include "crypto/crypto_scrypt.h"
@@ -108,16 +111,16 @@ ZEND_GET_MODULE(scrypt)
 PHP_FUNCTION(scrypt)
 {
 	/* Variables for PHP's parameters */
-	unsigned char *password;
+	char *password;
 	strsize_t password_len;
 
-	unsigned char *salt;
+	char *salt;
 	strsize_t salt_len;
 
-	long phpN;
-	long phpR;
-	long phpP;
-	long keyLength;
+	zend_long phpN;
+	zend_long phpR;
+	zend_long phpP;
+	zend_long keyLength;
 
 	zend_bool raw_output;
 
@@ -134,6 +137,19 @@ PHP_FUNCTION(scrypt)
 
 	/* Get the parameters for this call */
 	raw_output = 0;
+
+#if PHP_VERSION_ID >= 80000
+	ZEND_PARSE_PARAMETERS_START(6, 7)
+		Z_PARAM_STRING(password, password_len)
+		Z_PARAM_STRING(salt, salt_len)
+		Z_PARAM_LONG(phpN)
+		Z_PARAM_LONG(phpR)
+		Z_PARAM_LONG(phpP)
+		Z_PARAM_LONG(keyLength)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_BOOL(raw_output)
+	ZEND_PARSE_PARAMETERS_END();
+#else
 	if (zend_parse_parameters_throw(
 			ZEND_NUM_ARGS(), "ssllll|b",
 			&password, &password_len, &salt, &salt_len,
@@ -142,6 +158,7 @@ PHP_FUNCTION(scrypt)
 	{
 		RETURN_THROWS();
 	}
+#endif
 
 	/* Checks on the parameters */
 
@@ -190,7 +207,7 @@ PHP_FUNCTION(scrypt)
 
 	/* Call the scrypt function */
 	result = crypto_scrypt(
-		password, password_len, salt, salt_len, /* Input */
+		(const uint8_t *) password, password_len, (const uint8_t *) salt, salt_len, /* Input */
 		cryptN, cryptR, cryptP, /* Settings */
 		buf, keyLength /* Output */
 	);
@@ -204,7 +221,12 @@ PHP_FUNCTION(scrypt)
 	if (!raw_output) {
 		/* Encode the output in hex */
 		hex = (char*) safe_emalloc(2, keyLength, 1);
+
+#if PHP_VERSION_ID >= 80600
+		zend_bin2hex(hex, buf, keyLength);
+#else
 		php_hash_bin2hex(hex, buf, keyLength);
+#endif
 		efree(buf);
 		hex[keyLength*2] = '\0';
 		RETVAL_STRINGL(hex, keyLength * 2);
@@ -226,18 +248,24 @@ PHP_FUNCTION(scrypt)
  */
 PHP_FUNCTION(scrypt_pickparams)
 {
-	long maxmem;
+	zend_long maxmem;
 	double memfrac, maxtime;
 
 	int cryptN;
 	uint32_t cryptR;
 	uint32_t cryptP;
 
-	long phpN, phpP, phpR;
+	zend_long phpN, phpP, phpR;
 
 	int rc;
 
-	/* Get the parameters for this call */
+#if PHP_VERSION_ID >= 80000
+	ZEND_PARSE_PARAMETERS_START(3, 3)
+		Z_PARAM_LONG(maxmem)
+		Z_PARAM_DOUBLE(memfrac)
+		Z_PARAM_DOUBLE(maxtime)
+	ZEND_PARSE_PARAMETERS_END();
+#else
 	if (zend_parse_parameters_throw(
 			ZEND_NUM_ARGS(), "ldd",
 			&maxmem, &memfrac, &maxtime
@@ -245,6 +273,7 @@ PHP_FUNCTION(scrypt_pickparams)
 	{
 		RETURN_THROWS();
 	}
+#endif
 
 	if (maxmem < 0) {
 #if PHP_VERSION_ID >= 80000
